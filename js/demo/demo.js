@@ -1,26 +1,25 @@
 goog.provide('Demo');
 goog.provide('Demo.FrameEvent');
 
-goog.require('goog.events');
-goog.require('goog.events.EventType');
-goog.require('goog.math.Vec2');
-goog.require('goog.events.EventTarget');
-
 goog.require('box2d.AABB');
-goog.require('box2d.World');
 goog.require('box2d.BodyDef');
 goog.require('box2d.BoxDef');
 goog.require('box2d.CircleDef');
-
-goog.require('pixelLab.FpsLogger');
+goog.require('box2d.World');
 
 goog.require('demoDraw');
-
-goog.require('demos.stack');
-goog.require('demos.pendulum');
-goog.require('demos.top');
-goog.require('demos.crank');
 goog.require('demos.compound');
+goog.require('demos.crank');
+goog.require('demos.pendulum');
+goog.require('demos.stack');
+goog.require('demos.top');
+
+goog.require('goog.events');
+goog.require('goog.events.EventTarget');
+goog.require('goog.events.EventType');
+goog.require('goog.math.Vec2');
+
+goog.require('pixelLab.FpsLogger');
 
 /**
  @constructor
@@ -66,7 +65,7 @@ goog.inherits(Demo, goog.events.EventTarget);
 
 Demo.prototype.nextDemo = function(delta) {
   if (this.m_demos.length == 0) {
-    throw "No demos to load";
+    throw 'No demos to load';
   }
   this.m_initId += delta;
   while (this.m_initId < 0) {
@@ -190,4 +189,4 @@ goog.inherits(Demo.FrameEvent, goog.events.Event);
  @const
  @type {string}
 */
-Demo.FrameEvent.Type = "Demo.FrameEventType";
+Demo.FrameEvent.Type = 'Demo.FrameEventType';

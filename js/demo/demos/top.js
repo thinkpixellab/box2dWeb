@@ -1,9 +1,9 @@
 goog.provide('demos.top');
 
-goog.require('box2d.RevoluteJointDef');
+goog.require('box2d.BodyDef');
 goog.require('box2d.CircleDef');
 goog.require('box2d.PolyDef');
-goog.require('box2d.BodyDef');
+goog.require('box2d.RevoluteJointDef');
 
 demos.top = function(world) {
   demos.top.createBall(world, 350, 100, 50, true);

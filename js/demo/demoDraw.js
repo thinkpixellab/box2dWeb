@@ -81,7 +81,7 @@ demoDraw._drawShape = function(shape, context) {
     break;
   }
   context.stroke();
-  if(shape.GetUserData() == 'filled'){
+  if (shape.GetUserData() == 'filled') {
     context.fill();
   }
 };
