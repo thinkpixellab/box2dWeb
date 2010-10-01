@@ -34,7 +34,7 @@ $(window).load(function() {
     this['onselectstart'] = function() {
       return false;
     };
-    this.unselectable = "on";
+    this.unselectable = 'on';
     $(this).css('-moz-user-select', 'none');
     $(this).css('-webkit-user-select', 'none');
   });
