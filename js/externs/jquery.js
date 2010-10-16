@@ -48,6 +48,12 @@ jQueryObject.prototype.mouseup = function(fn) {};
 jQueryObject.prototype.keypress = function(fn) {};
 
 /**
+ * @param {Function} fn
+ * @return {jQueryObject}
+ */
+jQueryObject.prototype.click = function(fn) {};
+
+/**
  * @return {Object}
  */
 jQueryObject.prototype.offset = function() {};

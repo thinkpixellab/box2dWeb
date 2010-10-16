@@ -43,8 +43,9 @@ Demo = function(canvas) {
   this.m_canvasContext.fillStyle = '#ffffff';
   this.m_canvasContext.translate(this.m_translate.x, this.m_translate.y);
 
-  goog.events.listen(canvas, goog.events.EventType.CLICK, function(e) {
-    var offset = new goog.math.Vec2(e.offsetX, e.offsetY);
+  $(canvas).click(goog.bind(function(e) {
+    var offset = new goog.math.Vec2(e.pageX - canvas.offsetLeft, e.pageY - canvas.offsetTop);
+
     offset.subtract(this.m_translate);
     if (Math.random() < 0.5) {
       Demo.createBall(this.m_world, offset.x, offset.y, 10);
@@ -52,7 +53,7 @@ Demo = function(canvas) {
       Demo.createBox(this.m_world, offset.x, offset.y, 10, 10, false);
     }
   },
-  false, this);
+  this));
 
   this.m_fpsLogger = new pixelLab.FpsLogger();
   this.m_fps = 0;
@@ -172,7 +173,6 @@ Demo._millisecondsPerFrame = Demo._secondsPerFrame * 1000;
 //
 // Events
 //
-
 /**
  * @param {number} fps
  * @constructor
@@ -188,5 +188,5 @@ goog.inherits(Demo.FrameEvent, goog.events.Event);
 /**
  @const
  @type {string}
-*/
+ */
 Demo.FrameEvent.Type = 'Demo.FrameEventType';
