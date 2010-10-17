@@ -2,7 +2,7 @@ goog.require('Demo');
 goog.require('Demo.FrameEvent');
 
 $(window).load(function() {
-  var demo = new Demo($('canvas')[0]);
+  var demo = new Demo($('canvas')[0].getContext('2d'));
   $('#previous').click(function() {
     demo.nextDemo(-1);
   });

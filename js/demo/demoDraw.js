@@ -1,6 +1,7 @@
 goog.provide('demoDraw');
 
 demoDraw.drawWorld = function(world, context) {
+  context.clearRect(0, 0, context.canvas.width, context.canvas.height);
   for (var j = world.m_jointList; j; j = j.m_next) {
     demoDraw._drawJoint(world, j, context);
   }

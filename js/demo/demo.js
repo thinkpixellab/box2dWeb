@@ -25,15 +25,9 @@ goog.require('pixelLab.FpsLogger');
  @constructor
  @extends {goog.events.EventTarget}
  */
-Demo = function(canvas) {
-  this.m_canvasWidth = canvas.width;
-  this.m_canvasHeight = canvas.height;
-
-  this.m_translate = new goog.math.Vec2(this.m_canvasWidth / 2 - 250, this.m_canvasHeight / 2 - 185);
-
-  this.m_canvasContext = canvas.getContext('2d');
+Demo = function(canvasContext) {
+  this.m_canvasContext = canvasContext;
   this.m_canvasContext.fillStyle = this.m_canvasContext.strokeStyle = '#666';
-  this.m_canvasContext.translate(this.m_translate.x, this.m_translate.y);
 
   this.m_demos = [demos.compound, demos.crank, demos.stack, demos.pendulum, demos.top];
   this.nextDemo();
@@ -41,10 +35,8 @@ Demo = function(canvas) {
   this.m_fpsLogger = new pixelLab.FpsLogger();
   this._step();
 
-  $(canvas).click(goog.bind(function(e) {
-    var offset = new goog.math.Vec2(e.pageX - canvas.offsetLeft, e.pageY - canvas.offsetTop);
-
-    offset.subtract(this.m_translate);
+  $(canvasContext.canvas).click(goog.bind(function(e) {
+    var offset = new goog.math.Vec2(e.pageX - canvasContext.canvas.offsetLeft, e.pageY - canvasContext.canvas.offsetTop);
     if (Math.random() < 0.5) {
       Demo.createBall(this.m_world, offset.x, offset.y, 10);
     } else {
@@ -83,7 +75,6 @@ Demo.prototype._step = function() {
   goog.global.setTimeout(goog.bind(this._step, this));
   this.m_world.Step(Demo._secondsPerFrame, 1);
   if (!this.m_world.sleeping) {
-    this.m_canvasContext.clearRect(-this.m_translate.x, -this.m_translate.y, this.m_canvasWidth, this.m_canvasHeight);
     demoDraw.drawWorld(this.m_world, this.m_canvasContext);
   }
   var fps = Math.round(this.m_fpsLogger.AddInterval());

@@ -4,16 +4,14 @@
 }
 
 #container {
-  margin: 20px auto;
+  margin: 0 auto;
   width: 600px;
   text-align: center;
 }
 
 #fps{
-  float: right;
   height: 20px;
-  margin-top: -25px;
-  padding-right: 5px;
+  margin-bottom: -20px;
   font-size: 20px;
   color: '#999';
   text-align: right;
