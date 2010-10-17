@@ -40,7 +40,8 @@ Demo = function(canvas) {
   this.m_translate = new goog.math.Vec2(this.m_canvasWidth / 2 - 250, this.m_canvasHeight / 2 - 185);
 
   this.m_canvasContext = canvas.getContext('2d');
-  this.m_canvasContext.fillStyle = '#ffffff';
+  this.m_canvasContext.fillStyle = '#666';
+  this.m_canvasContext.strokeStyle = '#666';
   this.m_canvasContext.translate(this.m_translate.x, this.m_translate.y);
 
   $(canvas).click(goog.bind(function(e) {

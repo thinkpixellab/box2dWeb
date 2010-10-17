@@ -18,7 +18,6 @@ demoDraw._drawJoint = function(world, joint, context) {
   var x2 = b2.m_position;
   var p1 = joint.GetAnchor1();
   var p2 = joint.GetAnchor2();
-  context.strokeStyle = '#00eeee';
   context.beginPath();
   switch (joint.m_type) {
   case box2d.Joint.e_distanceJoint:
@@ -49,7 +48,6 @@ demoDraw._drawJoint = function(world, joint, context) {
 };
 
 demoDraw._drawShape = function(shape, context) {
-  context.strokeStyle = '#ffffff';
   context.beginPath();
   switch (shape.m_type) {
   case box2d.Shape.e_circleShape:

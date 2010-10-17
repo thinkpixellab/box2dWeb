@@ -9,18 +9,13 @@
   text-align: center;
 }
 
-canvas {
-  background: #333388;
-  display: block;
-}
-
 #fps{
   float: right;
   height: 20px;
   margin-top: -25px;
   padding-right: 5px;
   font-size: 20px;
-  color: white;
+  color: '#999';
   text-align: right;
   font-family: monospace;
   position: relative;
