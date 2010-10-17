@@ -26,14 +26,6 @@ goog.require('pixelLab.FpsLogger');
  @extends {goog.events.EventTarget}
  */
 Demo = function(canvas) {
-  this.m_initId = 0;
-  this.m_demos = [];
-  this.m_demos.push(demos.compound);
-  this.m_demos.push(demos.crank);
-  this.m_demos.push(demos.stack);
-  this.m_demos.push(demos.pendulum);
-  this.m_demos.push(demos.top);
-
   this.m_canvasWidth = canvas.width;
   this.m_canvasHeight = canvas.height;
 
@@ -42,6 +34,12 @@ Demo = function(canvas) {
   this.m_canvasContext = canvas.getContext('2d');
   this.m_canvasContext.fillStyle = this.m_canvasContext.strokeStyle = '#666';
   this.m_canvasContext.translate(this.m_translate.x, this.m_translate.y);
+
+  this.m_demos = [demos.compound, demos.crank, demos.stack, demos.pendulum, demos.top];
+  this.nextDemo();
+
+  this.m_fpsLogger = new pixelLab.FpsLogger();
+  this._step();
 
   $(canvas).click(goog.bind(function(e) {
     var offset = new goog.math.Vec2(e.pageX - canvas.offsetLeft, e.pageY - canvas.offsetTop);
@@ -54,32 +52,26 @@ Demo = function(canvas) {
     }
   },
   this));
-
-  this.m_fpsLogger = new pixelLab.FpsLogger();
-  this.m_fps = 0;
-
-  this.m_initId = Math.floor(Math.random() * this.m_demos.length);
-  this._setupWorld();
-  this._step();
 };
 goog.inherits(Demo, goog.events.EventTarget);
 
-Demo.prototype.nextDemo = function(delta) {
+/**
+ @param {number=} opt_delta
+*/
+Demo.prototype.nextDemo = function(opt_delta) {
   if (this.m_demos.length == 0) {
     throw 'No demos to load';
+  } else if (opt_delta === undefined) {
+    // if delta is undefined, just randomize the demo
+    this.m_initId = Math.floor(Math.random() * this.m_demos.length);
+  } else {
+    this.m_initId += opt_delta;
+    while (this.m_initId < 0) {
+      this.m_initId += this.m_demos.length;
+    }
+    this.m_initId %= this.m_demos.length;
   }
-  this.m_initId += delta;
-  while (this.m_initId < 0) {
-    this.m_initId += this.m_demos.length;
-  }
-  this.m_initId %= this.m_demos.length;
-  this._setupWorld();
-};
 
-/**
- @private
- */
-Demo.prototype._setupWorld = function() {
   this.m_world = Demo.createWorld();
   this.m_demos[this.m_initId](this.m_world);
 };
