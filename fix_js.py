@@ -2,4 +2,4 @@
 
 from _tools.fixjsstyle import *
 
-fix_js_style('js', ['jquery-1.4.2.min.js', 'deps.js', 'compiled.js'], ['closure-library', 'externs'])
+fix_js_style('js', ['deps.js', 'compiled.js'], ['closure-library', 'externs'])
