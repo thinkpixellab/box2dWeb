@@ -1,7 +1,7 @@
 goog.require('Demo');
 goog.require('Demo.FrameEvent');
 
-$(window).load(function() {
+$(document).ready(function() {
   var demo = new Demo($('canvas')[0].getContext('2d'));
   $('#fps_limit').click(function() {
     demo.limitFps($('#fps_limit').attr('checked'));
