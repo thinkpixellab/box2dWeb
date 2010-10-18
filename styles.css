@@ -1,6 +1,6 @@
 * {
-    margin: 0px;
-    padding: 0px;
+  margin: 0px;
+  padding: 0px;
 }
 
 #container {
@@ -9,18 +9,34 @@
   text-align: center;
 }
 
-#fps{
-  height: 20px;
-  margin-bottom: -20px;
+#tools {
+  margin: 0 auto;
   font-size: 20px;
-  color: '#999';
-  text-align: right;
   font-family: monospace;
-  position: relative;
+  text-align: center;
+}
+#tools div {
+  display: inline-block;
+}
+
+#tools label{
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#fps {
+  width: 90px;
+  text-align: right;
+  margin-right: 10px;
 }
 
 #fps.sleeping{
   color: gray;
+}
+
+#buttons {
+  clear: both;
 }
 
 button{

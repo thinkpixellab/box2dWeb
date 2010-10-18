@@ -33,6 +33,7 @@ Demo = function(canvasContext) {
   this.nextDemo();
 
   this.m_fpsLogger = new pixelLab.FpsLogger();
+  this.m_limitFps = true;
   this._step();
 
   $(canvasContext.canvas).click(goog.bind(function(e) {
@@ -69,10 +70,21 @@ Demo.prototype.nextDemo = function(opt_delta) {
 };
 
 /**
+ @param {boolean=} opt_limitFps
+ */
+Demo.prototype.limitFps = function(opt_limitFps) {
+  if (!(opt_limitFps === undefined)) {
+    this.m_limitFps = !!opt_limitFps;
+  }
+  return this.m_limitFps;
+};
+
+/**
  @private
  */
 Demo.prototype._step = function() {
-  goog.global.setTimeout(goog.bind(this._step, this));
+  var ms = this.m_limitFps ? 1000 / 60 : 1;
+  goog.global.setTimeout(goog.bind(this._step, this), ms);
   this.m_world.Step(Demo._secondsPerFrame, 1);
   if (!this.m_world.sleeping) {
     demoDraw.drawWorld(this.m_world, this.m_canvasContext);
