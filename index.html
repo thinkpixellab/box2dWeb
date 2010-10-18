@@ -7,9 +7,16 @@
     <script src="js/compiled.js"></script></head>
   <body>
     <div id="container">
-      <canvas height="310px" width="500px"></canvas>
-      <div id="fps">FPS</div>
-      <div>
+      <canvas height="310" width="500"></canvas>
+      <div id="tools">
+        <div>
+          <input id="fps_limit" type="checkbox"/>
+          <label for="fps_limit">Limit to 60fps</label>
+        </div>
+        <div id="fps">FPS</div>
+        <em>Click to add items</em>
+      </div>
+      <div id="buttons">
         <button id="previous">Previous</button>
         <button id="reload">Reload</button>
         <button id="next">Next</button>
