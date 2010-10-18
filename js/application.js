@@ -35,15 +35,4 @@ $(document).ready(function() {
     frameCount++;
     frameCount %= 30;
   });
-
-  // ensure the canvas isn't selectable
-  // minimizes some weird focus flashing in chrome
-  $('canvas').each(function() {
-    this['onselectstart'] = function() {
-      return false;
-    };
-    this.unselectable = 'on';
-    $(this).css('-moz-user-select', 'none');
-    $(this).css('-webkit-user-select', 'none');
-  });
 });

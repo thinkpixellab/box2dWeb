@@ -3,6 +3,12 @@
   padding: 0px;
 }
 
+canvas {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 #container {
   margin: 0 auto;
   width: 600px;
