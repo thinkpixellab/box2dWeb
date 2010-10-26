@@ -69,10 +69,10 @@ demoDraw._drawShape = function(shape, context) {
   case box2d.Shape.e_polyShape:
     {
       var poly = shape;
-      var tV = box2d.Math.AddVV(poly.m_position, box2d.Math.b2MulMV(poly.m_R, poly.m_vertices[0]));
+      var tV = box2d.Vec2.add(poly.m_position, box2d.Math.b2MulMV(poly.m_R, poly.m_vertices[0]));
       context.moveTo(tV.x, tV.y);
       for (var i = 0; i < poly.m_vertexCount; i++) {
-        var v = box2d.Math.AddVV(poly.m_position, box2d.Math.b2MulMV(poly.m_R, poly.m_vertices[i]));
+        var v = box2d.Vec2.add(poly.m_position, box2d.Math.b2MulMV(poly.m_R, poly.m_vertices[i]));
         context.lineTo(v.x, v.y);
       }
       context.lineTo(tV.x, tV.y);
