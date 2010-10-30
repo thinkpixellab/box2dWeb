@@ -2,7 +2,6 @@
 
 from os import path
 from _tools.Closure import Closure
-from glob import glob
 
 js_path = "js"
 
@@ -13,8 +12,7 @@ application_js_path = path.join(js_path, 'application.js')
 deps_js_path = path.join(js_path, "deps.js")
 compiled_js_path = path.join(js_path, "compiled.js")
 
-externs = glob(path.join(js_path, 'externs', '*.js'))
-
+externs = [path.join('_tools', 'externs', 'jquery-1.4.3.externs.js')]
 
 Closure(
   closure_path = closure_path,
