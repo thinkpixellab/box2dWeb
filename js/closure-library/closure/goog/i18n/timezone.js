@@ -15,13 +15,14 @@
 /**
  * @fileoverview Functions to provide timezone information for use with
  * date/time format.
- *
  */
 
 goog.provide('goog.i18n.TimeZone');
 
 goog.require('goog.array');
+goog.require('goog.date.DateLike');
 goog.require('goog.string');
+
 
 
 /**

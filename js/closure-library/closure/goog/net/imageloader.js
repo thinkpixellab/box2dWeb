@@ -16,8 +16,6 @@
  * @fileoverview Image loader utility class.  Useful when an application needs
  * to preload multiple images, for example so they can be sized.
  *
- *
- *
  */
 
 goog.provide('goog.net.ImageLoader');
@@ -29,6 +27,8 @@ goog.require('goog.events.EventType');
 goog.require('goog.net.EventType');
 goog.require('goog.object');
 goog.require('goog.userAgent');
+
+
 
 /**
  * Image loader utility class.  Raises a {@link goog.events.EventType.LOAD}
@@ -199,8 +199,14 @@ goog.net.ImageLoader.prototype.onNetworkEvent_ = function(evt) {
     }
   }
 
-  // Redispatch the event on behalf of the image.
+  // Redispatch the event on behalf of the image. Note that the external
+  // listener may dispose this instance.
   this.dispatchEvent({type: evt.type, target: image});
+
+  if (this.isDisposed()) {
+    // If instance was disposed by listener, exit this function.
+    return;
+  }
 
   // Remove the image from the map.
   goog.object.remove(this.images_, image.id);

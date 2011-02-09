@@ -18,10 +18,10 @@
  * Provides functionality for implementing drag and drop classes. Also provides
  * support classes and events.
  *
- *
  */
 
 goog.provide('goog.fx.AbstractDragDrop');
+goog.provide('goog.fx.AbstractDragDrop.EventType');
 goog.provide('goog.fx.DragDropEvent');
 goog.provide('goog.fx.DragDropItem');
 
@@ -36,6 +36,8 @@ goog.require('goog.fx.Dragger.EventType');
 goog.require('goog.math.Box');
 goog.require('goog.math.Coordinate');
 goog.require('goog.style');
+
+
 
 /**
  * Abstract class that provides reusable functionality for implementing drag
@@ -305,20 +307,31 @@ goog.fx.AbstractDragDrop.prototype.initItem = function(item) {
 
 
 /**
+ * Called when removing an item. Removes event listeners and classes.
+ *
+ * @param {goog.fx.DragDropItem} item Item to dispose.
+ * @protected
+ */
+goog.fx.AbstractDragDrop.prototype.disposeItem = function(item) {
+  if (this.isSource_) {
+    goog.events.unlisten(item.element, goog.events.EventType.MOUSEDOWN,
+                         item.mouseDown_, false, item);
+    if (this.sourceClass_) {
+      goog.dom.classes.remove(item.element, this.sourceClass_);
+    }
+  }
+  if (this.isTarget_ && this.targetClass_) {
+    goog.dom.classes.remove(item.element, this.targetClass_);
+  }
+};
+
+
+/**
  * Removes all items.
  */
 goog.fx.AbstractDragDrop.prototype.removeItems = function() {
   for (var item, i = 0; item = this.items_[i]; i++) {
-    if (this.isSource_) {
-      goog.events.unlisten(item.element, goog.events.EventType.MOUSEDOWN,
-                           item.mouseDown_, false, item);
-      if (this.sourceClass_) {
-        goog.dom.classes.remove(item.element, this.sourceClass_);
-      }
-    }
-    if (this.isTarget_ && this.targetClass_) {
-      goog.dom.classes.remove(item.element, this.targetClass_);
-    }
+    this.disposeItem(item);
   }
   this.items_.length = 0;
 };
@@ -697,10 +710,13 @@ goog.fx.AbstractDragDrop.prototype.containerScrollHandler_ = function(e) {
       container.savedScrollLeft_ = container.element_.scrollLeft;
 
       for (var j = 0, target; target = container.containedTargets_[j]; j++) {
-        target.box_.top += deltaTop;
-        target.box_.left += deltaLeft;
-        target.box_.bottom += deltaTop;
-        target.box_.right += deltaLeft;
+        var box = target.box_;
+        box.top += deltaTop;
+        box.left += deltaLeft;
+        box.bottom += deltaTop;
+        box.right += deltaLeft;
+
+        this.calculateTargetBox_(box);
       }
     }
   }
@@ -822,17 +838,28 @@ goog.fx.AbstractDragDrop.prototype.addDragTarget_ = function(target, item) {
     targetList.push(
         new goog.fx.ActiveDropTarget_(box, target, item, draggableElement));
 
-    // Calculate the outer bounds (the region all targets are inside)
-    if (targetList.length == 1) {
-      this.targetBox_ = new goog.math.Box(box.top, box.right,
-                                          box.bottom, box.left);
-    } else {
-      var tb = this.targetBox_;
-      tb.left = Math.min(box.left, tb.left);
-      tb.right = Math.max(box.right, tb.right);
-      tb.top = Math.min(box.top, tb.top);
-      tb.bottom = Math.max(box.bottom, tb.bottom);
-    }
+    this.calculateTargetBox_(box);
+  }
+};
+
+
+/**
+ * Calculate the outer bounds (the region all targets are inside).
+ *
+ * @param {goog.math.Box} box Box describing the position and dimension
+ *     of a drag target.
+ * @private
+ */
+goog.fx.AbstractDragDrop.prototype.calculateTargetBox_ = function(box) {
+  if (this.targetList_.length == 1) {
+    this.targetBox_ = new goog.math.Box(box.top, box.right,
+                                        box.bottom, box.left);
+  } else {
+    var tb = this.targetBox_;
+    tb.left = Math.min(box.left, tb.left);
+    tb.right = Math.max(box.right, tb.right);
+    tb.top = Math.min(box.top, tb.top);
+    tb.bottom = Math.max(box.bottom, tb.bottom);
   }
 };
 
@@ -1140,6 +1167,7 @@ goog.fx.DragDropEvent.prototype.disposeInternal = function() {
 };
 
 
+
 /**
  * Class representing a source or target element for drag and drop operations.
  *
@@ -1277,6 +1305,7 @@ goog.fx.DragDropItem.prototype.maybeStartDrag_ = function(event, element) {
 
   event.preventDefault();
 };
+
 
 /**
  * Event handler for mouse move. Starts drag operation if moved more than the

@@ -29,7 +29,6 @@
  * @supported IE5, IE6, IE7, Safari3.0, Chrome, FF2.0 (linux) and FF3.0 and
  * Opera (mac and windows).
  *
- *
  * @see ../demos/pastehandler.html
  */
 
@@ -43,6 +42,7 @@ goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
+
 
 
 /**
@@ -93,7 +93,8 @@ goog.events.PasteHandler = function(element) {
       goog.userAgent.IE ||
       goog.userAgent.GECKO && goog.userAgent.isVersion('1.9')) {
     // Most modern browsers support the paste event.
-    this.eventHandler_.listen(element, 'paste', this.dispatch_);
+    this.eventHandler_.listen(element, goog.events.EventType.PASTE,
+        this.dispatch_);
   } else {
     // But FF2 and Opera doesn't. we listen for a series of events to try to
     // find out if a paste occurred. We enumerate and cover all known ways to

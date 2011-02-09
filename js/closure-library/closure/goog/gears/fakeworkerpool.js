@@ -16,7 +16,6 @@
  * @fileoverview This implementation of goog.gears.WorkerPool uses
  * a fake worker pool (FakeWorkerPool_) that is implemented as an iframe in the
  * current document.
- *
  */
 
 goog.provide('goog.gears.FakeWorkerPool');
@@ -25,6 +24,7 @@ goog.require('goog.Uri');
 goog.require('goog.gears');
 goog.require('goog.gears.WorkerPool');
 goog.require('goog.net.XmlHttp');
+
 
 
 /**
@@ -120,7 +120,7 @@ goog.gears.FakeWorkerPool_.prototype.createWorker =
   // We cannot just set these to undefined because the properties are read
   // only. We therefore use a with statement to hide them to the scope.
   doc.write('<script>with ({window: undefined, document: undefined, ' +
-            'navigator: undefined}) {' + code + '}</script>');
+            'navigator: undefined}) {' + code + '}</' + 'script>');
   doc.close();
 
   return id;
@@ -227,7 +227,6 @@ goog.gears.FakeWorkerPool_.prototype.getWindow_ = function(workerId) {
   }
   throw Error('Could not access worker');
 };
-
 
 
 

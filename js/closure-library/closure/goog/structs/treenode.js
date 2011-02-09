@@ -16,7 +16,6 @@
  * @fileoverview Generic tree node data structure with arbitrary number of child
  * nodes.
  *
- *
  */
 
 goog.provide('goog.structs.TreeNode');
@@ -101,6 +100,28 @@ goog.structs.TreeNode.prototype.getParent = function() {
  */
 goog.structs.TreeNode.prototype.isLeaf = function() {
   return !this.getChildCount();
+};
+
+
+/**
+ * Tells if the node is the last child of its parent. This method helps how to
+ * connect the tree nodes with lines: L shapes should be used before the last
+ * children and |- shapes before the rest. Schematic tree visualization:
+ *
+ * <pre>
+ * Node1
+ * |-Node2
+ * | L-Node3
+ * |   |-Node4
+ * |   L-Node5
+ * L-Node6
+ * </pre>
+ *
+ * @return {boolean} Whether the node has parent and is the last child of it.
+ */
+goog.structs.TreeNode.prototype.isLastChild = function() {
+  var parent = this.getParent();
+  return Boolean(parent && this == goog.array.peek(parent.getChildren()));
 };
 
 

@@ -35,11 +35,11 @@
  *
  * TODO(user): Error cases aren't playing nicely in Safari.
  *
- *
  */
 
 
 goog.provide('goog.net.XhrIo');
+goog.provide('goog.net.XhrIo.ResponseType');
 
 goog.require('goog.Timer');
 goog.require('goog.debug.Logger');
@@ -51,8 +51,11 @@ goog.require('goog.net.ErrorCode');
 goog.require('goog.net.EventType');
 goog.require('goog.net.XmlHttp');
 goog.require('goog.net.xhrMonitor');
+goog.require('goog.object');
 goog.require('goog.structs');
 goog.require('goog.structs.Map');
+goog.require('goog.uri.utils');
+
 
 
 /**
@@ -81,6 +84,22 @@ goog.net.XhrIo = function(opt_xmlHttpFactory) {
 };
 goog.inherits(goog.net.XhrIo, goog.events.EventTarget);
 
+
+/**
+ * Response types that may be requested for XMLHttpRequests.
+ * @enum {string}
+ * @see http://dev.w3.org/2006/webapi/XMLHttpRequest-2/#the-responsetype-attribute
+ */
+goog.net.XhrIo.ResponseType = {
+  DEFAULT: '',
+  TEXT: 'text',
+  DOCUMENT: 'document',
+  // Not supported as of Chrome 10.0.612.1 dev
+  BLOB: 'blob',
+  ARRAY_BUFFER: 'arraybuffer'
+};
+
+
 /**
  * A reference to the XhrIo logger
  * @type {goog.debug.Logger}
@@ -95,6 +114,13 @@ goog.net.XhrIo.prototype.logger_ =
  * @type {string}
  */
 goog.net.XhrIo.CONTENT_TYPE_HEADER = 'Content-Type';
+
+
+/**
+ * The pattern matching the 'http' and 'https' URI schemes
+ * @type {!RegExp}
+ */
+goog.net.XhrIo.HTTP_SCHEME_PATTERN = /^https?:?$/i;
 
 
 /**
@@ -316,6 +342,29 @@ goog.net.XhrIo.prototype.timeoutId_ = null;
 
 
 /**
+ * The requested type for the response. The empty string means use the default
+ * XHR behavior.
+ * @type {goog.net.XhrIo.ResponseType}
+ * @private
+ */
+goog.net.XhrIo.prototype.responseType_ = goog.net.XhrIo.ResponseType.DEFAULT;
+
+
+/**
+ * Whether a "credentialed" request is to be sent (one that is aware of cookies
+ * and authentication) . This is applicable only for cross-domain requests and
+ * more recent browsers that support this part of the HTTP Access Control
+ * standard.
+ *
+ * @see http://dev.w3.org/2006/webapi/XMLHttpRequest-2/#withcredentials
+ *
+ * @type {boolean}
+ * @private
+ */
+goog.net.XhrIo.prototype.withCredentials_ = false;
+
+
+/**
  * Returns the number of milliseconds after which an incomplete request will be
  * aborted, or 0 if no timeout is set.
  * @return {number} Timeout interval in milliseconds.
@@ -333,6 +382,51 @@ goog.net.XhrIo.prototype.getTimeoutInterval = function() {
  */
 goog.net.XhrIo.prototype.setTimeoutInterval = function(ms) {
   this.timeoutInterval_ = Math.max(0, ms);
+};
+
+
+/**
+ * Sets the desired type for the response. At time of writing, this is only
+ * supported in very recent versions of WebKit (10.0.612.1 dev and later).
+ *
+ * If this is used, the response may only be accessed via {@link #getResponse}.
+ *
+ * @param {goog.net.XhrIo.ResponseType} type The desired type for the response.
+ */
+goog.net.XhrIo.prototype.setResponseType = function(type) {
+  this.responseType_ = type;
+};
+
+
+/**
+ * Gets the desired type for the response.
+ * @return {goog.net.XhrIo.ResponseType} The desired type for the response.
+ */
+goog.net.XhrIo.prototype.getResponseType = function() {
+  return this.responseType_;
+};
+
+
+/**
+ * Sets whether a "credentialed" request that is aware of cookie and
+ * authentication information should be made. This option is only supported by
+ * browsers that support HTTP Access Control. As of this writing, this option
+ * is not supported in IE.
+ *
+ * @param {boolean} withCredentials Whether this should be a "credentialed"
+ *     request.
+ */
+goog.net.XhrIo.prototype.setWithCredentials = function(withCredentials) {
+  this.withCredentials_ = withCredentials;
+};
+
+
+/**
+ * Gets whether a "credentialed" request is to be sent.
+ * @return {boolean} The desired type for the response.
+ */
+goog.net.XhrIo.prototype.getWithCredentials = function() {
+  return this.withCredentials_;
 };
 
 
@@ -415,6 +509,14 @@ goog.net.XhrIo.prototype.send = function(url, opt_method, opt_content,
     this.xhr_.setRequestHeader(key, value);
   }, this);
 
+  if (this.responseType_) {
+    this.xhr_.responseType = this.responseType_;
+  }
+
+  if (goog.object.containsKey(this.xhr_, 'withCredentials')) {
+    this.xhr_.withCredentials = this.withCredentials_;
+  }
+
   /**
    * Try to send the request, or other wise report an error (404 not found).
    * @preserveTry
@@ -457,11 +559,9 @@ goog.net.XhrIo.prototype.createXhr = function() {
 
 /**
  * Override of dispatchEvent.  We need to keep track if an XMLHttpRequest is
- * being sent from the context of another requests' repsonse.  If it is then, we
+ * being sent from the context of another requests' response.  If it is then, we
  * make the XHR send async.
- * @param {goog.events.Event|string} e Event to dispatch.
- * @return {boolean} Whether the dispatch completed without a handler calling
- *     preventDefault.
+ * @override
  */
 goog.net.XhrIo.prototype.dispatchEvent = function(e) {
   if (this.xhr_) {
@@ -742,6 +842,8 @@ goog.net.XhrIo.prototype.isComplete = function() {
 goog.net.XhrIo.prototype.isSuccess = function() {
   switch (this.getStatus()) {
     case 0:         // Used for local XHR requests
+      return !this.isLastUriEffectiveSchemeHttp_();
+
     case 200:       // Http Success
     case 204:       // Http Success - no content
     case 304:       // Http Cache
@@ -749,6 +851,31 @@ goog.net.XhrIo.prototype.isSuccess = function() {
 
     default:
       return false;
+  }
+};
+
+
+/**
+ * @return {boolean} whether the effective scheme of the last URI that was
+ *     fetched was 'http' or 'https'.
+ * @private
+ */
+goog.net.XhrIo.prototype.isLastUriEffectiveSchemeHttp_ = function() {
+  var lastUriScheme = goog.isString(this.lastUri_) ?
+      goog.uri.utils.getScheme(this.lastUri_) :
+      (/** @type {!goog.Uri} */ this.lastUri_).getScheme();
+  // if it's an absolute URI, we're done.
+  if (lastUriScheme) {
+    return goog.net.XhrIo.HTTP_SCHEME_PATTERN.test(lastUriScheme);
+  }
+
+  // if it's a relative URI, it inherits the scheme of the page.
+  if (self.location) {
+    return goog.net.XhrIo.HTTP_SCHEME_PATTERN.test(self.location.protocol);
+  } else {
+    // This case can occur from a web worker in Firefox 3.5 . All other browsers
+    // with web workers support self.location from the worker.
+    return true;
   }
 };
 
@@ -875,6 +1002,24 @@ goog.net.XhrIo.prototype.getResponseJson = function(opt_xssiPrefix) {
   }
 
   return goog.json.parse(responseText);
+};
+
+
+/**
+ * Get the response as the type specificed by {@link #setResponseType}. At time
+ * of writing, this is only supported in very recent versions of WebKit
+ * (10.0.612.1 dev and later).
+ *
+ * @return {*} The response.
+ */
+goog.net.XhrIo.prototype.getResponse = function() {
+  /** @preserveTry */
+  try {
+    return this.xhr_ && this.xhr_.response;
+  } catch (e) {
+    this.logger_.fine('Can not get response: ' + e.message);
+    return null;
+  }
 };
 
 

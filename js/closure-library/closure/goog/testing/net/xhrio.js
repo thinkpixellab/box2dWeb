@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Mock of XhrIo for unit testing.
- *
- *
  */
 
 goog.provide('goog.testing.net.XhrIo');
@@ -27,9 +25,11 @@ goog.require('goog.events.EventTarget');
 goog.require('goog.json');
 goog.require('goog.net.ErrorCode');
 goog.require('goog.net.EventType');
+goog.require('goog.net.XhrIo.ResponseType');
 goog.require('goog.net.XmlHttp');
 goog.require('goog.object');
 goog.require('goog.structs.Map');
+goog.require('goog.uri.utils');
 
 
 
@@ -109,7 +109,6 @@ goog.testing.net.XhrIo.send = function(url, opt_callback, opt_method,
   }
   x.send(url, opt_method, opt_content, opt_headers);
 };
-
 
 
 /**
@@ -204,6 +203,30 @@ goog.testing.net.XhrIo.prototype.timeoutId_ = null;
 
 
 /**
+ * The requested type for the response. The empty string means use the default
+ * XHR behavior.
+ * @type {goog.net.XhrIo.ResponseType}
+ * @private
+ */
+goog.testing.net.XhrIo.prototype.responseType_ =
+    goog.net.XhrIo.ResponseType.DEFAULT;
+
+
+/**
+ * Whether a "credentialed" request is to be sent (one that is aware of cookies
+ * and authentication) . This is applicable only for cross-domain requests and
+ * more recent browsers that support this part of the HTTP Access Control
+ * standard.
+ *
+ * @see http://dev.w3.org/2006/webapi/XMLHttpRequest-2/#withcredentials
+ *
+ * @type {boolean}
+ * @private
+ */
+goog.testing.net.XhrIo.prototype.withCredentials_ = false;
+
+
+/**
  * Whether there's currently an underlying XHR object.
  * @type {boolean}
  * @private
@@ -239,6 +262,52 @@ goog.testing.net.XhrIo.prototype.simulateTimeout = function() {
   this.lastErrorCode_ = goog.net.ErrorCode.TIMEOUT;
   this.dispatchEvent(goog.net.EventType.TIMEOUT);
   this.abort(goog.net.ErrorCode.TIMEOUT);
+};
+
+
+/**
+ * Sets the desired type for the response. At time of writing, this is only
+ * supported in very recent versions of WebKit (10.0.612.1 dev and later).
+ *
+ * If this is used, the response may only be accessed via {@link #getResponse}.
+ *
+ * @param {goog.net.XhrIo.ResponseType} type The desired type for the response.
+ */
+goog.testing.net.XhrIo.prototype.setResponseType = function(type) {
+  this.responseType_ = type;
+};
+
+
+/**
+ * Gets the desired type for the response.
+ * @return {goog.net.XhrIo.ResponseType} The desired type for the response.
+ */
+goog.testing.net.XhrIo.prototype.getResponseType = function() {
+  return this.responseType_;
+};
+
+
+/**
+ * Sets whether a "credentialed" request that is aware of cookie and
+ * authentication information should be made. This option is only supported by
+ * browsers that support HTTP Access Control. As of this writing, this option
+ * is not supported in IE.
+ *
+ * @param {boolean} withCredentials Whether this should be a "credentialed"
+ *     request.
+ */
+goog.testing.net.XhrIo.prototype.setWithCredentials =
+    function(withCredentials) {
+  this.withCredentials_ = withCredentials;
+};
+
+
+/**
+ * Gets whether a "credentialed" request is to be sent.
+ * @return {boolean} The desired type for the response.
+ */
+goog.testing.net.XhrIo.prototype.getWithCredentials = function() {
+  return this.withCredentials_;
 };
 
 
@@ -327,13 +396,14 @@ goog.testing.net.XhrIo.prototype.simulateResponse = function(statusCode,
   this.statusCode_ = statusCode;
   this.response_ = response || '';
   this.responseHeaders_ = opt_headers || {};
-  this.simulateReadyStateChange(goog.net.XmlHttp.ReadyState.COMPLETE);
 
   if (this.isSuccess()) {
+    this.simulateReadyStateChange(goog.net.XmlHttp.ReadyState.COMPLETE);
     this.dispatchEvent(goog.net.EventType.SUCCESS);
   } else {
     this.lastErrorCode_ = goog.net.ErrorCode.HTTP_ERROR;
     this.lastError_ = this.getStatusText() + ' [' + this.getStatus() + ']';
+    this.simulateReadyStateChange(goog.net.XmlHttp.ReadyState.COMPLETE);
     this.dispatchEvent(goog.net.EventType.ERROR);
   }
   this.simulateReady();
@@ -372,8 +442,7 @@ goog.testing.net.XhrIo.prototype.isComplete = function() {
  * @return {boolean} Whether the request compeleted successfully.
  */
 goog.testing.net.XhrIo.prototype.isSuccess = function() {
-  switch (this.statusCode_) {
-    case 0:         // Used for local XHR requests
+  switch (this.getStatus()) {
     case 200:       // HTTP Success
     case 204:       // HTTP Success - no content
     case 304:       // HTTP Cache
@@ -479,6 +548,18 @@ goog.testing.net.XhrIo.prototype.getResponseXml = function() {
   // NOTE(user): I haven't found out how to check in Internet Explorer
   // whether the response is XML document, so I do it the other way around.
   return goog.isString(this.response_) ? null : this.response_;
+};
+
+
+/**
+ * Get the response as the type specificed by {@link #setResponseType}. At time
+ * of writing, this is only supported in very recent versions of WebKit
+ * (10.0.612.1 dev and later).
+ *
+ * @return {*} The response.
+ */
+goog.testing.net.XhrIo.prototype.getResponse = function() {
+  return this.response_;
 };
 
 

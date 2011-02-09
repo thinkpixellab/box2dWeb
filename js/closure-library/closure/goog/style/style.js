@@ -15,10 +15,6 @@
 /**
  * @fileoverview Utilities for element styles.
  *
- *
- *
- *
- *
  * @see ../demos/inline_block_quirks.html
  * @see ../demos/inline_block_standards.html
  * @see ../demos/style_viewport.html
@@ -34,6 +30,7 @@ goog.require('goog.math.Coordinate');
 goog.require('goog.math.Rect');
 goog.require('goog.math.Size');
 goog.require('goog.object');
+goog.require('goog.string');
 goog.require('goog.userAgent');
 
 
@@ -67,11 +64,11 @@ goog.style.setStyle = function(element, style, opt_value) {
  * {@code goog.object.forEach()}.
  * @param {Element} element The element to change.
  * @param {string|number|boolean|undefined} value Style value.
- * @param {string|number|boolean} style Style name.
+ * @param {string} style Style name.
  * @private
  */
 goog.style.setStyle_ = function(element, value, style) {
-  element.style[goog.style.toCamelCase(style)] = value;
+  element.style[goog.string.toCamelCase(style)] = value;
 };
 
 
@@ -81,33 +78,41 @@ goog.style.setStyle_ = function(element, value, style) {
  * explicitly set in script.
  *
  * @param {Element} element Element to get style of.
- * @param {string} style Property to get, css-style (if you have a camel-case
+ * @param {string} property Property to get, css-style (if you have a camel-case
  * property, use element.style[style]).
  * @return {string} Style value.
  */
-goog.style.getStyle = function(element, style) {
-  return element.style[goog.style.toCamelCase(style)];
+goog.style.getStyle = function(element, property) {
+  // element.style is '' for well-known properties which are unset.
+  // For for browser specific styles as 'filter' is undefined
+  // so we need to return '' explicitly to make it consistent across
+  // browsers.
+  return element.style[goog.string.toCamelCase(property)] || '';
 };
 
 
 /**
- * Retrieves a computed style value of a node, or null if the value cannot be
- * computed (which will be the case in Internet Explorer).
+ * Retrieves a computed style value of a node. It returns empty string if the
+ * value cannot be computed (which will be the case in Internet Explorer) or
+ * "none" if the property requested is a SVG one and it has not been
+ * explicitly set (firefox and webkit).
  *
  * @param {Element} element Element to get style of.
- * @param {string} style Property to get (camel-case).
- * @return {?string} Style value.
+ * @param {string} property Property to get (camel-case).
+ * @return {string} Style value.
  */
-goog.style.getComputedStyle = function(element, style) {
+goog.style.getComputedStyle = function(element, property) {
   var doc = goog.dom.getOwnerDocument(element);
   if (doc.defaultView && doc.defaultView.getComputedStyle) {
-    var styles = doc.defaultView.getComputedStyle(element, '');
+    var styles = doc.defaultView.getComputedStyle(element, null);
     if (styles) {
-      return styles[style];
+      // element.style[..] is undefined for browser specific styles
+      // as 'filter'.
+      return styles[property] || styles.getPropertyValue(property);
     }
   }
 
-  return null;
+  return '';
 };
 
 
@@ -717,7 +722,7 @@ goog.style.getRelativePosition = function(a, b) {
 
 /**
  * Returns the position relative to the client viewport.
- * @param {Element|Event|goog.events.Event} el Element or a mouse event object.
+ * @param {Element|Event|goog.events.Event} el Element or a mouse / touch event.
  * @return {!goog.math.Coordinate} The position.
  */
 goog.style.getClientPosition = function(el) {
@@ -735,8 +740,17 @@ goog.style.getClientPosition = function(el) {
       pos.y = pageCoord.y - scrollCoord.y;
     }
   } else {
-    pos.x = el.clientX;
-    pos.y = el.clientY;
+    var isAbstractedEvent = goog.isFunction(el.getBrowserEvent);
+    var targetEvent = el;
+
+    if (el.targetTouches) {
+      targetEvent = el.targetTouches[0];
+    } else if (isAbstractedEvent && el.getBrowserEvent().targetTouches) {
+      targetEvent = el.getBrowserEvent().targetTouches[0];
+    }
+
+    pos.x = targetEvent.clientX;
+    pos.y = targetEvent.clientY;
   }
 
   return pos;
@@ -843,7 +857,6 @@ goog.style.setWidth = function(element, width) {
 };
 
 
-
 /**
  * Gets the height and width of an element, even if its display is none.
  * Specifically, this returns the height and width of the border box,
@@ -901,44 +914,24 @@ goog.style.getBounds = function(element) {
 
 
 /**
- * A memoized cache for goog.style.toCamelCase.
- * @type {Object}
- * @private
- */
-goog.style.toCamelCaseCache_ = {};
-
-
-/**
- * Converts a CSS selector in the form style-property to styleProperty
+ * Converts a CSS selector in the form style-property to styleProperty.
  * @param {*} selector CSS Selector.
  * @return {string} Camel case selector.
+ * @deprecated Use goog.string.toCamelCase instead.
  */
 goog.style.toCamelCase = function(selector) {
-  return goog.style.toCamelCaseCache_[selector] ||
-    (goog.style.toCamelCaseCache_[selector] =
-        String(selector).replace(/\-([a-z])/g, function(all, match) {
-          return match.toUpperCase();
-        }));
+  return goog.string.toCamelCase(String(selector));
 };
-
-
-/**
- * A memoized cache for goog.style.toSelectorCase.
- * @type {Object.<string>}
- * @private
- */
-goog.style.toSelectorCaseCache_ = {};
 
 
 /**
  * Converts a CSS selector in the form styleProperty to style-property.
  * @param {string} selector Camel case selector.
  * @return {string} Selector cased.
+ * @deprecated Use goog.string.toSelectorCase instead.
  */
 goog.style.toSelectorCase = function(selector) {
-  return goog.style.toSelectorCaseCache_[selector] ||
-      (goog.style.toSelectorCaseCache_[selector] =
-          selector.replace(/([A-Z])/g, '-$1').toLowerCase());
+  return goog.string.toSelectorCase(selector);
 };
 
 
@@ -1730,7 +1723,7 @@ goog.style.getFontSize = function(el) {
   var sizeElement = goog.dom.createDom(
       'span',
       {'style': 'visibility:hidden;position:absolute;' +
-                'line-height:0;padding:0;margin:0;border:0;height:1em;'});
+            'line-height:0;padding:0;margin:0;border:0;height:1em;'});
   goog.dom.appendChild(el, sizeElement);
   fontSize = sizeElement.offsetHeight;
   goog.dom.removeNode(sizeElement);
@@ -1749,7 +1742,7 @@ goog.style.parseStyleAttribute = function(value) {
   goog.array.forEach(value.split(/\s*;\s*/), function(pair) {
     var keyValue = pair.split(/\s*:\s*/);
     if (keyValue.length == 2) {
-      result[goog.style.toCamelCase(keyValue[0].toLowerCase())] = keyValue[1];
+      result[goog.string.toCamelCase(keyValue[0].toLowerCase())] = keyValue[1];
     }
   });
   return result;
@@ -1766,7 +1759,7 @@ goog.style.parseStyleAttribute = function(value) {
 goog.style.toStyleAttribute = function(obj) {
   var buffer = [];
   goog.object.forEach(obj, function(value, key) {
-    buffer.push(goog.style.toSelectorCase(key), ':', value, ';');
+    buffer.push(goog.string.toSelectorCase(key), ':', value, ';');
   });
   return buffer.join('');
 };

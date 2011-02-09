@@ -173,7 +173,7 @@ function testGetDocumentHeightInIframe() {
   var height = goog.dom.getDomHelper(myIframeDoc).getDocumentHeight();
 
   // Broken in webkit quirks mode and in IE8
-  if ((goog.dom.isCss1CompatMode_(doc) || !goog.userAgent.WEBKIT ) &&
+  if ((goog.dom.isCss1CompatMode_(doc) || !goog.userAgent.WEBKIT) &&
       !isIE8()) {
     assertEquals('height should be 65', 42 + 23, height);
   }
@@ -494,6 +494,35 @@ function testIsNodeLike() {
 
   assertTrue('custom object should be node like',
              goog.dom.isNodeLike({nodeType: 1}));
+}
+
+function testIsWindow() {
+  var global = goog.global;
+  var frame = window.frames['frame'];
+  var otherWindow = window.open('', 'blank');
+  var object = {window: goog.global};
+  var nullVar = null;
+  var notDefined;
+
+  try {
+    // Use try/finally to ensure that we clean up the window we open, even if an
+    // assertion fails or something else goes wrong.
+    assertTrue('global object in HTML context should be a window',
+               goog.dom.isWindow(goog.global));
+    assertTrue('iframe window should be a window', goog.dom.isWindow(frame));
+    if (otherWindow) {
+      assertTrue('other window should be a window',
+                 goog.dom.isWindow(otherWindow));
+    }
+    assertFalse('object should not be a window', goog.dom.isWindow(object));
+    assertFalse('null should not be a window', goog.dom.isWindow(nullVar));
+    assertFalse('undefined should not be a window',
+                goog.dom.isWindow(notDefined));
+  } finally {
+    if (otherWindow) {
+      otherWindow.close();
+    }
+  }
 }
 
 function testGetOwnerDocument() {
@@ -930,7 +959,7 @@ function testCanHaveChildren() {
         expected = false;
         break;
     }
-    var node = goog.dom.createDom(tag)
+    var node = goog.dom.createDom(tag);
     assertEquals(tag + ' should ' + (expected ? '' : 'not ') +
         'have children', expected, goog.dom.canHaveChildren(node));
 
@@ -1000,14 +1029,14 @@ function testGetAncestorByTagNameOnly() {
 function testGetAncestorByClassNameNoMatch() {
   var elem = goog.dom.getElement('nestedElement');
   assertNull(
-      goog.dom.getAncestorByTagNameAndClass(elem, null, 'bogusClassName'));
+      goog.dom.getAncestorByClass(elem, 'bogusClassName'));
 }
 
 function testGetAncestorByClassName() {
   var elem = goog.dom.getElement('nestedElement');
   var expected = goog.dom.getElement('testAncestorP');
   assertEquals(expected,
-      goog.dom.getAncestorByTagNameAndClass(elem, null, 'testAncestor'));
+      goog.dom.getAncestorByClass(elem, 'testAncestor'));
 }
 
 function testGetAncestorByTagNameAndClass() {
@@ -1089,6 +1118,7 @@ function testAppend4() {
   assertEqualsCaseAndLeadingWhitespaceInsensitive('a<b></b>c', div.innerHTML);
   assertFalse(div2.hasChildNodes());
 }
+
 
 /**
  * @return {boolean} Returns true if the userAgent is IE8.

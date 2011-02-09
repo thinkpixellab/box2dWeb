@@ -15,7 +15,6 @@
 /**
  * @fileoverview A simple, sample component.
  *
- *
  */
 goog.provide('goog.demos.SampleComponent');
 
@@ -27,6 +26,7 @@ goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler');
 goog.require('goog.events.KeyHandler.EventType');
 goog.require('goog.ui.Component');
+
 
 
 /**
@@ -104,7 +104,7 @@ goog.demos.SampleComponent.prototype.createDom = function() {
 /**
  * Decorates an existing HTML DIV element as a SampleComponent.
  *
- * @param {HTMLElement} element The DIV element to decorate. The element's
+ * @param {Element} element The DIV element to decorate. The element's
  *    text, if any will be used as the component's label.
  */
 goog.demos.SampleComponent.prototype.decorateInternal = function(element) {

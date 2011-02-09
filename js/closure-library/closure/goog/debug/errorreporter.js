@@ -16,8 +16,6 @@
  * @fileoverview Definition of the ErrorReporter class, which creates an error
  * handler that reports any errors raised to a URL.
  *
- *
- *
  */
 
 goog.provide('goog.debug.ErrorReporter');
@@ -25,6 +23,7 @@ goog.provide('goog.debug.ErrorReporter.ExceptionEvent');
 
 goog.require('goog.debug');
 goog.require('goog.debug.ErrorHandler');
+goog.require('goog.debug.Logger');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventTarget');
@@ -32,6 +31,7 @@ goog.require('goog.net.XhrIo');
 goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.uri.utils');
+
 
 
 /**
@@ -79,6 +79,7 @@ goog.debug.ErrorReporter = function(
   }
 };
 goog.inherits(goog.debug.ErrorReporter, goog.events.EventTarget);
+
 
 
 /**
@@ -207,6 +208,7 @@ goog.debug.ErrorReporter.prototype.setLoggingHeaders =
     function(loggingHeaders) {
   this.extraHeaders_ = loggingHeaders;
 };
+
 
 /**
  * Set the function used to send error reports to the server.

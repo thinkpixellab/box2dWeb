@@ -15,9 +15,6 @@
 /**
  * @fileoverview A singleton object for managing Javascript code modules.
  *
- *
- *
- *
  */
 
 goog.provide('goog.module.ModuleManager');
@@ -32,6 +29,7 @@ goog.require('goog.debug.Trace');
 goog.require('goog.module.AbstractModuleLoader');
 goog.require('goog.module.ModuleInfo');
 goog.require('goog.module.ModuleLoadCallback');
+
 
 
 /**
@@ -104,6 +102,7 @@ goog.module.ModuleManager = function() {
 };
 goog.inherits(goog.module.ModuleManager, goog.Disposable);
 goog.addSingletonGetter(goog.module.ModuleManager);
+
 
 /**
 * The type of callbacks that can be registered with the module manager,.
@@ -250,13 +249,13 @@ goog.module.ModuleManager.prototype.setAllModuleInfo = function(infoMap) {
 /**
  * Sets the module info for all modules. Should only be called once.
  *
- * @param {string} opt_info A string representation of the module dependency
+ * @param {string=} opt_info A string representation of the module dependency
  *      graph, in the form: module1:dep1,dep2/module2:dep1,dep2 etc.
  *     Where depX is the base-36 encoded position of the dep in the module list.
  */
 goog.module.ModuleManager.prototype.setAllModuleInfoString = function(
     opt_info) {
-  if (!opt_info) {
+  if (!goog.isString(opt_info)) {
     // The call to this method is generated in two steps, the argument is added
     // after some of the compilation passes.  This means that the initial code
     // doesn't have any arguments and causes compiler errors.  We make it
@@ -439,7 +438,7 @@ goog.module.ModuleManager.prototype.
     d.callback(this.moduleContext_);
   } else {
     moduleInfo.registerCallback(d.callback, d);
-    moduleInfo.registerErrback(d.errback, d);
+    moduleInfo.registerErrback(function(err) { d.errback(Error(err)); });
     if (!this.isModuleLoading(id)) {
       this.loadModuleOrEnqueue_(id);
     }
@@ -645,7 +644,7 @@ goog.module.ModuleManager.prototype.execOnLoad = function(
     callbackWrapper = moduleInfo.registerCallback(fn, opt_handler);
     if (opt_userInitiated) {
       this.logger_.info('User initiated module already loading: ' + moduleId);
-      this.userInitiatedLoadingModuleIds_.push(moduleId);
+      this.addUserIntiatedLoadingModule_(moduleId);
       this.dispatchActiveIdleChangeIfNeeded_();
     }
   } else {
@@ -654,7 +653,7 @@ goog.module.ModuleManager.prototype.execOnLoad = function(
     if (!opt_noLoad) {
       if (opt_userInitiated) {
         this.logger_.info('User initiated module load: ' + moduleId);
-        this.userInitiatedLoadingModuleIds_.push(moduleId);
+        this.addUserIntiatedLoadingModule_(moduleId);
       }
       this.logger_.info('Initiating module load: ' + moduleId);
       this.loadModuleOrEnqueue_(moduleId);
@@ -684,20 +683,20 @@ goog.module.ModuleManager.prototype.load = function(
   } else if (this.isModuleLoading(moduleId)) {
     this.logger_.info(moduleId + ' module already loading');
     moduleInfo.registerCallback(d.callback, d);
-    moduleInfo.registerErrback(d.errback, d);
+    moduleInfo.registerErrback(function(err) { d.errback(Error(err)); });
     if (opt_userInitiated) {
       this.logger_.info('User initiated module already loading: ' + moduleId);
-      this.userInitiatedLoadingModuleIds_.push(moduleId);
+      this.addUserIntiatedLoadingModule_(moduleId);
       this.dispatchActiveIdleChangeIfNeeded_();
     }
 
   } else {
     this.logger_.info('Registering callback for module: ' + moduleId);
     moduleInfo.registerCallback(d.callback, d);
-    moduleInfo.registerErrback(d.errback, d);
+    moduleInfo.registerErrback(function(err) { d.errback(Error(err)); });
     if (opt_userInitiated) {
       this.logger_.info('User initiated module load: ' + moduleId);
-      this.userInitiatedLoadingModuleIds_.push(moduleId);
+      this.addUserIntiatedLoadingModule_(moduleId);
     } else {
       this.logger_.info('Initiating module load: ' + moduleId);
     }
@@ -705,6 +704,21 @@ goog.module.ModuleManager.prototype.load = function(
   }
 
   return d;
+};
+
+
+/**
+ * Ensures that the module with the given id is listed as a user-initiated
+ * module that is being loaded. This method guarantees that a module will never
+ * get listed more than once.
+ * @param {string} id Identifier of the module.
+ * @private
+ */
+goog.module.ModuleManager.prototype.addUserIntiatedLoadingModule_ = function(
+    id) {
+  if (!goog.array.contains(this.userInitiatedLoadingModuleIds_, id)) {
+    this.userInitiatedLoadingModuleIds_.push(id);
+  }
 };
 
 

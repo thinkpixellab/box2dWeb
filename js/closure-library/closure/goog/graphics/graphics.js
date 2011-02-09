@@ -15,7 +15,6 @@
 
 /**
  * @fileoverview Graphics utility functions and factory methods.
- *
  * @see ../demos/graphics/advancedcoordinates.html
  * @see ../demos/graphics/advancedcoordinates2.html
  * @see ../demos/graphics/basicelements.html
@@ -51,7 +50,7 @@ goog.require('goog.userAgent');
 goog.graphics.createGraphics = function(width, height, opt_coordWidth,
     opt_coordHeight, opt_domHelper) {
   var graphics;
-  if (goog.userAgent.IE) {
+  if (goog.userAgent.IE && !goog.userAgent.isVersion('9')) {
     graphics = new goog.graphics.VmlGraphics(width, height,
         opt_coordWidth, opt_coordHeight, opt_domHelper);
   } else if (goog.userAgent.WEBKIT && (!goog.userAgent.isVersion('420') ||

@@ -89,7 +89,6 @@
  * TODO(user): implement, as needed, the Media specific state changes UI, such
  * as minimize/maximize buttons, expand/close buttons, etc.
  *
- *
  */
 
 goog.provide('goog.ui.media.Media');
@@ -99,6 +98,7 @@ goog.require('goog.style');
 goog.require('goog.ui.Component.State');
 goog.require('goog.ui.Control');
 goog.require('goog.ui.ControlRenderer');
+
 
 
 /**
@@ -124,6 +124,10 @@ goog.ui.media.Media = function(dataModel, opt_renderer, opt_domHelper) {
   // e.preventDefault(), because it was not allowing the event to reach the
   // flash player. figure out a better way to not e.preventDefault().
   this.setAllowTextSelection(true);
+
+  // Media items don't use RTL styles, so avoid accessing computed styles to
+  // figure out if the control is RTL.
+  this.setRightToLeft(false);
 };
 goog.inherits(goog.ui.media.Media, goog.ui.Control);
 
@@ -154,6 +158,7 @@ goog.ui.media.Media.prototype.setDataModel = function(dataModel) {
 goog.ui.media.Media.prototype.getDataModel = function() {
   return this.dataModel_;
 };
+
 
 
 /**

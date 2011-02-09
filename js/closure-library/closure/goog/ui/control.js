@@ -18,8 +18,8 @@
  * of {@link goog.ui.MenuItem}.
  * TODO(user):  If the renderer framework works well, pull it into Component.
  *
- *
  * @see ../demos/control.html
+ * @see http://code.google.com/p/closure-library/wiki/IntroToControls
  */
 
 goog.provide('goog.ui.Control');
@@ -42,6 +42,7 @@ goog.require('goog.ui.ControlRenderer');
 goog.require('goog.ui.decorate');
 goog.require('goog.ui.registry');
 goog.require('goog.userAgent');
+
 
 
 /**
@@ -1178,7 +1179,7 @@ goog.ui.Control.prototype.handleMouseDown = function(e) {
 
     // For the left button only, activate the control, and focus its key event
     // target (if supported).
-    if (e.isButton(goog.events.BrowserEvent.MouseButton.LEFT)) {
+    if (e.isMouseActionButton()) {
       if (this.isAutoState(goog.ui.Component.State.ACTIVE)) {
         this.setActive(true);
       }
@@ -1189,8 +1190,7 @@ goog.ui.Control.prototype.handleMouseDown = function(e) {
   }
 
   // Cancel the default action unless the control allows text selection.
-  if (!this.isAllowTextSelection() &&
-      e.isButton(goog.events.BrowserEvent.MouseButton.LEFT)) {
+  if (!this.isAllowTextSelection() && e.isMouseActionButton()) {
     e.preventDefault();
   }
 };
@@ -1260,8 +1260,9 @@ goog.ui.Control.prototype.performActionInternal = function(e) {
   var actionEvent = new goog.events.Event(goog.ui.Component.EventType.ACTION,
       this);
   if (e) {
-    var properties = ['altKey', 'ctrlKey', 'metaKey', 'shiftKey',
-        'platformModifierKey'];
+    var properties = [
+      'altKey', 'ctrlKey', 'metaKey', 'shiftKey', 'platformModifierKey'
+    ];
     for (var property, i = 0; property = properties[i]; i++) {
       actionEvent[property] = e[property];
     }

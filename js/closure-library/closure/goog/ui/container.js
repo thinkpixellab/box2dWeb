@@ -18,7 +18,6 @@
  * handling and child management, based on a generalized version of
  * {@link goog.ui.Menu}.
  *
- *
  * @see ../demos/container.html
  */
 // TODO(user):  Fix code/logic duplication between this and goog.ui.Control.
@@ -41,6 +40,8 @@ goog.require('goog.ui.Component.Error');
 goog.require('goog.ui.Component.EventType');
 goog.require('goog.ui.Component.State');
 goog.require('goog.ui.ContainerRenderer');
+
+
 
 /**
  * Base class for containers.  Extends {@link goog.ui.Component} by adding
@@ -388,7 +389,7 @@ goog.ui.Container.prototype.enterDocument = function() {
       listen(goog.dom.getOwnerDocument(elem), goog.events.EventType.MOUSEUP,
           this.handleDocumentMouseUp).
 
-      // Handle mouse events on behalf of cpresently2ontrols in the container.
+      // Handle mouse events on behalf of controls in the container.
       listen(elem, [
         goog.events.EventType.MOUSEDOWN,
         goog.events.EventType.MOUSEUP,

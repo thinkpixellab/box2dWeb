@@ -15,7 +15,6 @@
 /**
  * @fileoverview Anchored viewport positioning class.
  *
- *
  */
 
 goog.provide('goog.positioning.AnchoredViewportPosition');
@@ -28,10 +27,11 @@ goog.require('goog.positioning.Overflow');
 goog.require('goog.positioning.OverflowStatus');
 
 
+
 /**
  * Encapsulates a popup position where the popup is anchored at a corner of
  * an element. The corners are swapped if dictated by the viewport. For instance
- * if a popup is anchored with it's top left corner to the bottom left corner of
+ * if a popup is anchored with its top left corner to the bottom left corner of
  * the anchor the popup is either displayed below the anchor (as specified) or
  * above it if there's not enough room to display it below.
  *

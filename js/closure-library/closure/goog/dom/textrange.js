@@ -16,8 +16,8 @@
  * @fileoverview Utilities for working with text ranges in HTML documents.
  *
  * @author robbyw@google.com (Robby Walker)
- *
- *
+ * @author ojan@google.com (Ojan Vafai)
+ * @author jparent@google.com (Julie Parent)
  */
 
 
@@ -33,6 +33,7 @@ goog.require('goog.dom.TextRangeIterator');
 goog.require('goog.dom.browserrange');
 goog.require('goog.string');
 goog.require('goog.userAgent');
+
 
 
 /**
@@ -363,7 +364,7 @@ goog.dom.TextRange.prototype.containsRange = function(otherRange,
  * @return {boolean} Whether the given node is in the given document.
  */
 goog.dom.TextRange.isAttachedNode = function(node) {
-  if (goog.userAgent.IE) {
+  if (goog.userAgent.IE && !goog.userAgent.isVersion('9')) {
     var returnValue = false;
     /** @preserveTry */
     try {
@@ -389,7 +390,7 @@ goog.dom.TextRange.prototype.isRangeInDocument = function() {
           goog.dom.TextRange.isAttachedNode(this.startNode_)) &&
          (!this.endNode_ ||
           goog.dom.TextRange.isAttachedNode(this.endNode_)) &&
-         (!goog.userAgent.IE ||
+         (!(goog.userAgent.IE && !goog.userAgent.isVersion('9')) ||
           this.getBrowserRangeWrapper_().isRangeInDocument());
 };
 
@@ -550,6 +551,7 @@ goog.dom.TextRange.prototype.collapse = function(toAnchor) {
 
 
 // SAVED RANGE OBJECTS
+
 
 
 /**

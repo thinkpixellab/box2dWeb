@@ -24,7 +24,6 @@
  *     regardless of whether or not the media is correct or not. Firefox at
  *     least supports CSSRule.type to figure out if it's a media type and then
  *     we could do something interesting, but IE offers no way for us to tell.
- *
  */
 
 goog.provide('goog.cssom');
@@ -157,9 +156,9 @@ goog.cssom.getAllCssStyleSheets = function(opt_styleSheet,
     }
   }
 
-  // This is a CSSStyleSheet.
-  if ((styleSheet.type || styleSheet.rules) && (!styleSheet.disabled ||
-      includeDisabled)) {
+  // This is a CSSStyleSheet. (IE uses .rules, W3c and Opera cssRules.)
+  if ((styleSheet.type || styleSheet.rules || styleSheet.cssRules) &&
+      (!styleSheet.disabled || includeDisabled)) {
     styleSheetsOutput.push(styleSheet);
   }
 
@@ -205,7 +204,7 @@ goog.cssom.getCssTextFromCssRule = function(cssRule) {
 goog.cssom.getCssRuleIndexInParentStyleSheet = function(cssRule,
     opt_parentStyleSheet) {
   // Look for our special style.ruleIndex property from getAllCss.
-  if (cssRule.style['-closure-rule-index']) {
+  if (cssRule.style && cssRule.style['-closure-rule-index']) {
     return cssRule.style['-closure-rule-index'];
   }
 

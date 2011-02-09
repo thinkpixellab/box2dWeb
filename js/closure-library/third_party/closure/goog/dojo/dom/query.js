@@ -64,8 +64,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *        future queries using the same selector evaluate against the DOM branch
  *        too.
  *    5.) matched nodes are pruned to ensure they are unique
- *
- *
  */
 
 goog.provide('goog.dom.query');
@@ -187,10 +185,10 @@ goog.require('goog.userAgent');
    *   affecting any nested tables:
    * |  dojo.query("#tabular_data > tbody > tr:nth-child(odd)");
    *
-   * @param {string} query The CSS3 expression to match against. For details
-   *     on the syntax of CSS3 selectors, see
+   * @param {string|Array} query The CSS3 expression to match against.
+   *     For details on the syntax of CSS3 selectors, see
    *     http://www.w3.org/TR/css3-selectors/#selectors.
-   * @param {string|Node} opt_root A Node (or node id) to scope the search
+   * @param {(string|Node)=} opt_root A Node (or node id) to scope the search
    *     from (optional).
    * @return { {length: number} } The elements that matched the query.
    */
@@ -555,6 +553,9 @@ goog.dom.query = (function() {
     }
   };
 
+  /**
+   * @param {Array=} opt_arr
+   */
   function getArr(i, opt_arr) {
     // helps us avoid array alloc when we don't need it
     var r = opt_arr || [];
@@ -1261,6 +1262,8 @@ goog.dom.query = (function() {
     // see #5832
     (!goog.userAgent.WEBKIT || goog.userAgent.isVersion('526'))
   );
+
+  /** @param {boolean=} opt_forceDOM */
   var getQueryFunc = function(query, opt_forceDOM) {
 
     if (qsaAvail) {
@@ -1306,7 +1309,7 @@ goog.dom.query = (function() {
       //    need to tighten up browser rules on ':contains' and '|=' to
       //    figure out which aren't good
       (query.indexOf(':contains') == -1) &&
-      (query.indexOf('|=') == -1) 
+      (query.indexOf('|=') == -1)
     );
 
     // TODO:
@@ -1462,7 +1465,12 @@ goog.dom.query = (function() {
     return ret;
   };
 
-  // the main executor
+  /**
+   * The main executor. Type specification from above.
+   * @param {string|Array} query The query.
+   * @param {(string|Node)=} root The root.
+   * @return { {length: number} } The elements that matched the query.
+   */
   var query = function(query, root) {
     // NOTE: elementsById is not currently supported
     // NOTE: ignores xpath-ish queries for now
@@ -1475,7 +1483,7 @@ goog.dom.query = (function() {
     }
 
     if (query.constructor == Array) {
-      return query;
+      return /** @type {!Array} */ (query);
     }
 
     if (!goog.isString(query)) {

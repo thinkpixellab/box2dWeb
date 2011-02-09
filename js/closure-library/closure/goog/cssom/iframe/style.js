@@ -44,8 +44,6 @@
  * body .highlighted { background-color: yellow; }
  * </p>
  *
- *
- *
  */
 
 
@@ -55,6 +53,7 @@ goog.require('goog.cssom');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.classes');
+goog.require('goog.string');
 goog.require('goog.style');
 goog.require('goog.userAgent');
 
@@ -98,6 +97,7 @@ goog.cssom.iframe.style.DECLARATION_START_DELIMITER_ = '{';
  * @private
  */
 goog.cssom.iframe.style.DECLARATION_END_DELIMITER_ = '}\n';
+
 
 
 /**
@@ -286,6 +286,7 @@ goog.cssom.iframe.style.makeColorRuleImportant_ = function(cssText) {
 };
 
 
+
 /**
  * Represents a single CSS selector, as described in
  * http://www.w3.org/TR/REC-CSS2/selector.html
@@ -406,6 +407,7 @@ goog.cssom.iframe.style.CssSelector_.prototype.matchElementAncestry =
 };
 
 
+
 /**
  * Represents one part of a CSS Selector. For example in the selector
  * 'body #foo .bar', body, #foo, and .bar would be considered selector parts.
@@ -490,6 +492,7 @@ goog.cssom.iframe.style.CssSelectorPart_.prototype.testElement =
   this.testedElements_[elementUid] = matched;
   return matched;
 };
+
 
 
 /**
@@ -788,7 +791,7 @@ goog.cssom.iframe.style.getElementContext = function(
   for (var i = 0, prop;
        prop = goog.cssom.iframe.style.inheritedProperties_[i];
        i++) {
-    defaultProperties[prop] = computedStyle[goog.style.toCamelCase(prop)];
+    defaultProperties[prop] = computedStyle[goog.string.toCamelCase(prop)];
   }
   defaultPropertiesRuleSet.setDeclarationTextFromObject(defaultProperties);
   ruleSets.push(defaultPropertiesRuleSet);
@@ -809,7 +812,7 @@ goog.cssom.iframe.style.getElementContext = function(
   // Text formatting property values, to keep text nodes directly under BODY
   // looking right.
   for (i = 0, prop; prop = goog.cssom.iframe.style.textProperties_[i]; i++) {
-    bodyProperties[prop] = computedStyle[goog.style.toCamelCase(prop)];
+    bodyProperties[prop] = computedStyle[goog.string.toCamelCase(prop)];
   }
   if (opt_copyBackgroundContext &&
       goog.cssom.iframe.style.isTransparentValue_(

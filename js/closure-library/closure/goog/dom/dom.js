@@ -20,8 +20,6 @@
  * to a different document object.  This is useful if you are working with
  * frames or multiple windows.
  *
- *
- *
  */
 
 
@@ -338,6 +336,7 @@ goog.dom.DIRECT_ATTRIBUTE_MAP_ = {
   'width': 'width',
   'usemap': 'useMap',
   'frameborder': 'frameBorder',
+  'maxlength': 'maxLength',
   'type': 'type'
 };
 
@@ -462,6 +461,7 @@ goog.dom.getViewportSize_ = function(win) {
 goog.dom.getDocumentHeight = function() {
   return goog.dom.getDocumentHeight_(window);
 };
+
 
 /**
  * Calculates the height of the document of the given window.
@@ -640,6 +640,7 @@ goog.dom.getWindow_ = function(doc) {
 goog.dom.createDom = function(tagName, opt_attributes, var_args) {
   return goog.dom.createDom_(document, arguments);
 };
+
 
 /**
  * Helper for {@code createDom}.
@@ -1165,6 +1166,17 @@ goog.dom.isNodeLike = function(obj) {
 
 
 /**
+ * Returns true if the specified value is a Window object. This includes the
+ * global window for HTML pages, and iframe windows.
+ * @param {*} obj Variable to test.
+ * @return {boolean} Whether the variable is a window.
+ */
+goog.dom.isWindow = function(obj) {
+  return goog.isObject(obj) && obj['window'] == obj;
+};
+
+
+/**
  * Whether a node contains another node.
  * @param {Node} parent The node that should contain the other node.
  * @param {Node} descendant The node to test presence of.
@@ -1596,6 +1608,8 @@ goog.dom.getTextContent = function(node) {
 
   // Strip &shy; entities. goog.format.insertWordBreaks inserts them in Opera.
   textContent = textContent.replace(/ \xAD /g, ' ').replace(/\xAD/g, '');
+  // Strip &#8203; entities. goog.format.insertWordBreaks inserts them in IE8.
+  textContent = textContent.replace(/\u200B/g, '');
 
   // Skip this replacement on IE, which automatically turns &nbsp; into ' '
   // and / +/ into ' ' when reading innerText.
@@ -1784,6 +1798,21 @@ goog.dom.getAncestorByTagNameAndClass = function(element, opt_tag, opt_class) {
 
 
 /**
+ * Walks up the DOM hierarchy returning the first ancestor that has the passed
+ * class name. If the passed element matches the specified criteria, the
+ * element itself is returned.
+ * @param {Node} element The DOM node to start with.
+ * @param {?string=} opt_class The class name to match (or null/undefined to
+ *     match any node regardless of class name).
+ * @return {Node} The first ancestor that matches the passed criteria, or
+ *     null if none match.
+ */
+goog.dom.getAncestorByClass = function(element, opt_class) {
+  return goog.dom.getAncestorByTagNameAndClass(element, null, opt_class);
+};
+
+
+/**
  * Walks up the DOM hierarchy returning the first ancestor that passes the
  * matcher function.
  * @param {Node} element The DOM node to start with.
@@ -1814,6 +1843,7 @@ goog.dom.getAncestor = function(
   // Reached the root of the DOM without a match
   return null;
 };
+
 
 
 /**

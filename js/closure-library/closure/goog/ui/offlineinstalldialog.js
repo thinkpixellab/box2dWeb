@@ -17,7 +17,6 @@
  * show information on how to install Gears if Gears is not already installed,
  * or will offer the option to enable the application for Gears support.
  *
- *
  * @see ../demos/offline.html
  */
 
@@ -39,6 +38,7 @@ goog.require('goog.ui.Dialog');
 goog.require('goog.ui.Dialog.ButtonSet');
 goog.require('goog.ui.Dialog.EventType');
 goog.require('goog.window');
+
 
 
 /**
@@ -396,6 +396,8 @@ goog.ui.OfflineInstallDialog.prototype.disposeInternal = function() {
  * @extends {goog.Disposable}
  */
 goog.ui.OfflineInstallDialogScreen = function(dialog, type) {
+  goog.Disposable.call(this);
+
   /**
    * @type {goog.ui.OfflineInstallDialog}
    * @protected
@@ -574,6 +576,8 @@ goog.ui.OfflineInstallDialogScreen.prototype.handleSelect = function(e) {
 
 
 // Classes for some of the standard screens
+
+
 
 /**
  * This screen is shown to users that do have Gears installed but have
@@ -832,9 +836,10 @@ goog.ui.OfflineInstallDialog.InstallScreen.prototype.getContent = function() {
      * @desc One of the steps to perform in order to enable offline access.
      * @hidden
      */
-    var MSG_OFFLINE_DIALOG_COME_BACK = goog.getMsg('Come back to {$appUrl}!',
-        {'appUrl': '<span class="' + this.appUrlClassName_ + '">' +
-            this.dialog_.getAppUrl() + '</span>'});
+    var MSG_OFFLINE_DIALOG_COME_BACK = goog.getMsg('Come back to {$appUrl}!', {
+      'appUrl': '<span class="' + this.appUrlClassName_ + '">' +
+          this.dialog_.getAppUrl() + '</span>'
+    });
     sb.append(this.getStepHtml_(3, MSG_OFFLINE_DIALOG_COME_BACK));
 
     // Close the enclosing element.
@@ -980,6 +985,7 @@ goog.ui.OfflineInstallDialog.UpgradeScreen.prototype.setUpgradeDescription =
 };
 
 
+
 /**
  * This screen is shown to users after the window to the Gears download page has
  * been opened.
@@ -1034,6 +1040,7 @@ goog.ui.OfflineInstallDialog.InstallingGearsScreen.prototype.getButtonSet =
   }
   return this.buttonSet_;
 };
+
 
 /**
  * Gets the content for the dialog when the user is suposed to be installing

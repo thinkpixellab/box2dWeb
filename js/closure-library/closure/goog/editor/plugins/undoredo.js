@@ -16,7 +16,6 @@
 /**
  * @fileoverview Code for handling edit history (undo/redo).
  *
- *
  */
 
 
@@ -34,6 +33,7 @@ goog.require('goog.editor.plugins.UndoRedoManager');
 goog.require('goog.editor.plugins.UndoRedoState');
 goog.require('goog.events');
 goog.require('goog.events.EventHandler');
+
 
 
 /**
@@ -521,7 +521,7 @@ goog.editor.plugins.UndoRedo.prototype.refreshCurrentState = function(
  */
 goog.editor.plugins.UndoRedo.prototype.handleBeforeChange_ = function(e) {
   if (this.inProgressUndo_) {
-    // We are in between a previous undo and it's delayed change event.
+    // We are in between a previous undo and its delayed change event.
     // Continuing here clobbers the redo stack.
     // This does mean that if you are trying to undo/redo really quickly, it
     // will be gated by the speed of delayed change events.
@@ -643,6 +643,7 @@ goog.editor.plugins.UndoRedo.prototype.updateCurrentState_ = function(
       new goog.editor.plugins.UndoRedo.UndoState_(fieldHashCode, content,
           cursorPos, this.boundRestoreState_);
 };
+
 
 
 /**
@@ -777,6 +778,7 @@ goog.editor.plugins.UndoRedo.UndoState_.prototype.equals = function(rhs) {
       this.undoContent_ == rhs.undoContent_ &&
       this.redoContent_ == rhs.redoContent_;
 };
+
 
 
 /**

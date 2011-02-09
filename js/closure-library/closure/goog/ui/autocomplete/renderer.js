@@ -16,7 +16,6 @@
  * @fileoverview Class for rendering the results of an auto complete and
  * allow the user to select an row.
  *
- *
  */
 
 goog.provide('goog.ui.AutoComplete.Renderer');
@@ -33,6 +32,7 @@ goog.require('goog.style');
 goog.require('goog.ui.AutoComplete');
 goog.require('goog.ui.IdGenerator');
 goog.require('goog.userAgent');
+
 
 
 /**
@@ -203,11 +203,6 @@ goog.ui.AutoComplete.Renderer = function(opt_parentNode, opt_customRenderer,
    * @private
    */
    this.topAlign_ = false;
-
-  // TODO(user): Remove once JSCompiler's undefined properties warnings
-  // don't error for guarded properties.
-  var magicProps = { renderRow: 0 };
-
 };
 goog.inherits(goog.ui.AutoComplete.Renderer, goog.events.EventTarget);
 
@@ -385,7 +380,7 @@ goog.ui.AutoComplete.Renderer.prototype.maybeCreateElement_ = function() {
     this.setMenuClasses_(el);
     goog.dom.a11y.setRole(el, goog.dom.a11y.Role.LISTBOX);
 
-    var id = el.id = goog.ui.IdGenerator.getInstance().getNextUniqueId();
+    el.id = goog.ui.IdGenerator.getInstance().getNextUniqueId();
 
     // Set ARIA roles and states for the target input box.
     if (this.target_) {
@@ -403,8 +398,8 @@ goog.ui.AutoComplete.Renderer.prototype.maybeCreateElement_ = function() {
     goog.events.listen(el, goog.events.EventType.MOUSEDOWN,
                        this.handleMouseDown_, false, this);
     goog.events.listen(this.dom_.getDocument(),
-                       goog.events.EventType.CLICK,
-                       this.handleDocumentClick_, false, this);
+                       goog.events.EventType.MOUSEDOWN,
+                       this.handleDocumentMousedown_, false, this);
     goog.events.listen(el, goog.events.EventType.MOUSEOVER,
                        this.handleMouseOver_, false, this);
   }
@@ -524,7 +519,8 @@ goog.ui.AutoComplete.Renderer.prototype.disposeInternal = function() {
     goog.events.unlisten(this.element_, goog.events.EventType.MOUSEDOWN,
         this.handleMouseDown_, false, this);
     goog.events.unlisten(this.dom_.getDocument(),
-        goog.events.EventType.CLICK, this.handleDocumentClick_, false, this);
+        goog.events.EventType.MOUSEDOWN, this.handleDocumentMousedown_, false,
+        this);
     goog.events.unlisten(this.element_, goog.events.EventType.MOUSEOVER,
         this.handleMouseOver_, false, this);
     this.dom_.removeNode(this.element_);
@@ -791,7 +787,9 @@ goog.ui.AutoComplete.Renderer.prototype.handleMouseDown_ = function(e) {
  * @param {Object} e The document click event.
  * @private
  */
-goog.ui.AutoComplete.Renderer.prototype.handleDocumentClick_ = function(e) {
+goog.ui.AutoComplete.Renderer.prototype.handleDocumentMousedown_ = function(e) {
+  // Note that clicks inside the input itself are handled here, too, giving the
+  // effect that you can dismiss the autocomplete by re-clicking on the input.
   this.dispatchEvent(goog.ui.AutoComplete.EventType.DISMISS);
 };
 

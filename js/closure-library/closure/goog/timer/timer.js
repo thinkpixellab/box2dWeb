@@ -16,7 +16,6 @@
  * @fileoverview A timer class to which other classes and objects can
  * listen on.  This is only an abstraction above setInterval.
  *
- *
  * @see ../demos/timers.html
  */
 
@@ -153,7 +152,7 @@ goog.Timer.prototype.setInterval = function(interval) {
 
 
 /**
- * Callback for the setInterval used by the timer
+ * Callback for the setTimeout used by the timer
  * @private
  */
 goog.Timer.prototype.tick_ = function() {

@@ -34,10 +34,7 @@
  * goog.events.removeAll();
  * </pre>
  *
- *
- *
  *                                            in IE and event object patching]
- *
  *
  * @supported IE6+, FF1.5+, WebKit, Opera.
  * @see ../demos/events.html
@@ -571,10 +568,10 @@ goog.events.getListeners_ = function(obj, type, capture) {
  * Gets the goog.events.Listener for the event or null if no such listener is
  * in use.
  *
- * @param {EventTarget|goog.events.EventTarget} src The node to stop
- *     listening to events on.
+ * @param {EventTarget|goog.events.EventTarget} src The node from which to get
+ *     listeners.
  * @param {?string} type The name of the event without the 'on' prefix.
- * @param {Function|Object} listener The listener function to remove.
+ * @param {Function|Object} listener The listener function to get.
  * @param {boolean=} opt_capt In DOM-compliant browsers, this determines
  *                            whether the listener is fired during the
  *                            capture or bubble phase of the event.
@@ -787,26 +784,25 @@ goog.events.getTotalListenerCount = function() {
  *     true.
  */
 goog.events.dispatchEvent = function(src, e) {
+  var type = e.type || e;
+  var map = goog.events.listenerTree_;
+  if (!(type in map)) {
+    return true;
+  }
+
   // If accepting a string or object, create a custom event object so that
   // preventDefault and stopPropagation work with the event.
   if (goog.isString(e)) {
     e = new goog.events.Event(e, src);
   } else if (!(e instanceof goog.events.Event)) {
     var oldEvent = e;
-    e = new goog.events.Event(e.type, src);
+    e = new goog.events.Event(type, src);
     goog.object.extend(e, oldEvent);
   } else {
     e.target = e.target || src;
   }
 
   var rv = 1, ancestors;
-
-  var type = e.type;
-  var map = goog.events.listenerTree_;
-
-  if (!(type in map)) {
-    return true;
-  }
 
   map = map[type];
   var hasCapture = true in map;
