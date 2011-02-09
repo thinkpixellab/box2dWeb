@@ -12,7 +12,7 @@ application_js_path = path.join(js_path, 'application.js')
 deps_js_path = path.join(js_path, "deps.js")
 compiled_js_path = path.join(js_path, "compiled.js")
 
-externs = [path.join('_tools', 'externs', 'jquery-1.4.3.externs.js')]
+externs = [path.join(js_path, 'externs', 'jquery-1.5.js')]
 
 Closure(
   closure_path = closure_path,
