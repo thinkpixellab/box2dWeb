@@ -4,3 +4,6 @@
 [submodule "js/box2d"]
 	path = js/box2d
 	url = git://github.com/thinkpixellab/box2d.git
+[submodule "js/closure-library"]
+	path = js/closure-library
+	url = git://github.com/jarib/google-closure-library.git
