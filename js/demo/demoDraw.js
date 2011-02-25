@@ -1,5 +1,7 @@
 goog.provide('demoDraw');
 
+goog.require('box2d.ShapeDef');
+
 demoDraw.drawWorld = function(world, context) {
   context.clearRect(0, 0, context.canvas.width, context.canvas.height);
   for (var j = world.m_jointList; j; j = j.m_next) {
@@ -51,7 +53,7 @@ demoDraw._drawJoint = function(world, joint, context) {
 demoDraw._drawShape = function(shape, context) {
   context.beginPath();
   switch (shape.m_type) {
-  case box2d.Shape.Type.circleShape:
+  case box2d.ShapeDef.Type.circleShape:
     {
       var circle = shape;
       var pos = circle.m_position;
@@ -66,7 +68,7 @@ demoDraw._drawShape = function(shape, context) {
       context.lineTo(pos2.x, pos2.y);
     }
     break;
-  case box2d.Shape.Type.polyShape:
+  case box2d.ShapeDef.Type.polyShape:
     {
       var poly = shape;
       var tV = box2d.Vec2.add(poly.m_position, box2d.Math.b2MulMV(poly.m_R, poly.m_vertices[0]));
