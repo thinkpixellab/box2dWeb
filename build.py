@@ -17,6 +17,7 @@ externs = [path.join(js_path, 'externs', 'jquery-1.5.js')]
 Closure(
   closure_path = closure_path,
   application_js_path = application_js_path,
+  root_symbol = None,
   closure_dependencies = js_dirs + [application_js_path],
   deps_js_path = deps_js_path,
   compiled_js_path = compiled_js_path,
