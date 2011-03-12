@@ -2,7 +2,12 @@ goog.require('Demo');
 goog.require('Demo.FrameEvent');
 
 $(document).ready(function() {
-  var demo = new Demo($('canvas')[0].getContext('2d'));
+  var canvas = $('canvas')[0];
+  canvas.onselectstart = function () {
+    return false;
+  };
+
+  var demo = new Demo(canvas.getContext('2d'));
   $('#fps_limit').click(function() {
     demo.limitFps($('#fps_limit').attr('checked'));
   });
