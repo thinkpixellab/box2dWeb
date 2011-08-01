@@ -75,4 +75,3 @@ goog.addDependency("../../../demo/demos/pendulum.js", ['demos.pendulum'], ['box2
 goog.addDependency("../../../demo/demos/stack.js", ['demos.stack'], []);
 goog.addDependency("../../../demo/demos/top.js", ['demos.top'], ['box2d.BodyDef', 'box2d.CircleDef', 'box2d.PolyDef', 'box2d.RevoluteJointDef']);
 goog.addDependency("../../../pixelLab/FpsLogger.js", ['pixelLab.FpsLogger'], []);
-goog.addDependency("../../../application.js", [], ['Demo', 'Demo.FrameEvent']);

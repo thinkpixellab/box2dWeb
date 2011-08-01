@@ -1,0 +1,12 @@
+base_path: js/closure-library/closure
+inputs:
+  - js/application.js
+js_paths:
+  - js/closure-library/closure
+  - js/box2d
+  - js/demo
+  - js/pixelLab
+deps_path: js/deps.js
+compile_path: js/compiled.js
+externs:
+  - js/externs/jquery-1.5.js
