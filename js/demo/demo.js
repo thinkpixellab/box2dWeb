@@ -19,6 +19,7 @@ goog.require('goog.events');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.math.Vec2');
+goog.require('goog.Timer');
 
 goog.require('pixelLab.FpsLogger');
 
@@ -53,7 +54,7 @@ goog.inherits(Demo, goog.events.EventTarget);
  @param {number=} opt_delta
 */
 Demo.prototype.nextDemo = function(opt_delta) {
-  if (this.m_demos.length == 0) {
+  if (this.m_demos.length === 0) {
     throw 'No demos to load';
   } else if (opt_delta === undefined) {
     // if delta is undefined, just randomize the demo
@@ -74,7 +75,7 @@ Demo.prototype.nextDemo = function(opt_delta) {
  @param {boolean=} opt_limitFps
  */
 Demo.prototype.limitFps = function(opt_limitFps) {
-  if (!(opt_limitFps === undefined)) {
+  if (opt_limitFps !== undefined) {
     this.m_limitFps = !!opt_limitFps;
   }
   return this.m_limitFps;
@@ -89,7 +90,7 @@ Demo.prototype._step = function() {
     box2d.Util.requestAnimFrame(goog.bind(this._step, this));
   }
   else{
-    goog.global.setTimeout(goog.bind(this._step, this), 1);
+    goog.Timer.callOnce(this._step, 0, this);
   }
   this.m_world.Step(Demo._secondsPerFrame, 1);
   if (!this.m_world.sleeping) {

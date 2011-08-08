@@ -5,11 +5,14 @@ goog.provide('pixelLab.FpsLogger');
  */
 pixelLab.FpsLogger = function() {
   this.m_count = 0;
-  this.m_values = new Array();
+  this.m_values = [];
   this.m_sum = 0;
   this.fps = 0;
 };
 
+/**
+ @returns {number}
+ **/
 pixelLab.FpsLogger.prototype.AddInterval = function() {
   var currentTick = goog.now();
   if (this.m_lastTick > 0) {

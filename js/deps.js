@@ -67,7 +67,7 @@ goog.addDependency("../../../box2d/dynamics/joints/b2PulleyJoint.js", ['box2d.Pu
 goog.addDependency("../../../box2d/dynamics/joints/b2PulleyJointDef.js", ['box2d.PulleyJointDef'], ['box2d.JointDef']);
 goog.addDependency("../../../box2d/dynamics/joints/b2RevoluteJoint.js", ['box2d.RevoluteJoint'], ['box2d.Joint', 'box2d.RevoluteJointDef']);
 goog.addDependency("../../../box2d/dynamics/joints/b2RevoluteJointDef.js", ['box2d.RevoluteJointDef'], ['box2d.Joint', 'box2d.JointDef', 'box2d.Vec2']);
-goog.addDependency("../../../demo/demo.js", ['Demo', 'Demo.FrameEvent'], ['box2d.AABB', 'box2d.BodyDef', 'box2d.BoxDef', 'box2d.CircleDef', 'box2d.Util', 'box2d.World', 'demoDraw', 'demos.compound', 'demos.crank', 'demos.pendulum', 'demos.stack', 'demos.top', 'goog.events', 'goog.events.EventTarget', 'goog.events.EventType', 'goog.math.Vec2', 'pixelLab.FpsLogger']);
+goog.addDependency("../../../demo/demo.js", ['Demo', 'Demo.FrameEvent'], ['box2d.AABB', 'box2d.BodyDef', 'box2d.BoxDef', 'box2d.CircleDef', 'box2d.Util', 'box2d.World', 'demoDraw', 'demos.compound', 'demos.crank', 'demos.pendulum', 'demos.stack', 'demos.top', 'goog.events', 'goog.events.EventTarget', 'goog.events.EventType', 'goog.math.Vec2', 'goog.Timer', 'pixelLab.FpsLogger']);
 goog.addDependency("../../../demo/demoDraw.js", ['demoDraw'], ['box2d.ShapeDef']);
 goog.addDependency("../../../demo/demos/compound.js", ['demos.compound'], []);
 goog.addDependency("../../../demo/demos/crank.js", ['demos.crank'], ['box2d.BodyDef', 'box2d.BoxDef', 'box2d.PrismaticJointDef', 'box2d.RevoluteJointDef']);
