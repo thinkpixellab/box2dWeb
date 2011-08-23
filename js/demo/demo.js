@@ -5,7 +5,7 @@ goog.require('box2d.AABB');
 goog.require('box2d.BodyDef');
 goog.require('box2d.BoxDef');
 goog.require('box2d.CircleDef');
-goog.require('box2d.Util');
+goog.require('pl.ex');
 goog.require('box2d.World');
 
 goog.require('demoDraw');
@@ -87,7 +87,7 @@ Demo.prototype.limitFps = function(opt_limitFps) {
 Demo.prototype._step = function() {
   var ms = this.m_limitFps ? 1000 / 60 : 1;
   if(this.m_limitFps){
-    box2d.Util.requestAnimFrame(goog.bind(this._step, this));
+    pl.ex.requestAnimationFrame(goog.bind(this._step, this));
   }
   else{
     goog.Timer.callOnce(this._step, 0, this);
