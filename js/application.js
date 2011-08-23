@@ -26,9 +26,9 @@ $(document).ready(function() {
     demo.nextDemo(1);
   });
 
-  var frameCount = 0;
-  goog.events.listen(demo, Demo.FrameEvent.Type, function(e) {
-    if (frameCount == 0) {
+  var frameCount = 1;
+  demo.addEventListener(Demo.FrameEvent.Type, function(e) {
+    if (frameCount === 0) {
       $('#fps').html(e.fps + 'fps');
 
       if (e.sleeping) {

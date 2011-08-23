@@ -86,7 +86,7 @@ Demo.prototype.limitFps = function(opt_limitFps) {
  @private
  */
 Demo.prototype._step = function() {
-  var ms = this.m_limitFps ? 1000 / 60 : 1;
+  this.m_fpsLogger.AddInterval();
   if(this.m_limitFps){
     pl.ex.requestAnimationFrame(goog.bind(this._step, this));
   }
@@ -97,8 +97,7 @@ Demo.prototype._step = function() {
   if (!this.m_world.sleeping) {
     demoDraw.drawWorld(this.m_world, this.m_canvasContext);
   }
-  var fps = Math.round(this.m_fpsLogger.AddInterval());
-  this.dispatchEvent(new Demo.FrameEvent(fps, this.m_world.sleeping));
+  this.dispatchEvent(new Demo.FrameEvent(this.m_fpsLogger.fps, this.m_world.sleeping));
 };
 
 Demo.createWorld = function() {
@@ -166,13 +165,6 @@ Demo.createBox = function(world, x, y, width, height, fixed, filled) {
  */
 Demo._secondsPerFrame = 1.0 / 60;
 
-/**
- @private
- @const
- @type {number}
- */
-Demo._millisecondsPerFrame = Demo._secondsPerFrame * 1000;
-
 //
 // Events
 //
@@ -183,7 +175,7 @@ Demo._millisecondsPerFrame = Demo._secondsPerFrame * 1000;
  */
 Demo.FrameEvent = function(fps, sleeping) {
   goog.base(this, Demo.FrameEvent.Type);
-  this.fps = fps;
+  this.fps = pl.ex.round(fps);
   this.sleeping = sleeping;
 };
 goog.inherits(Demo.FrameEvent, goog.events.Event);
