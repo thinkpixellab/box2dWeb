@@ -5,7 +5,6 @@ js_paths:
   - js/closure/closure
   - js/demo
   - js/pl
-  - js/pixelLab
 deps_path: js/deps.js
 compile_path: js/compiled.js
 externs:

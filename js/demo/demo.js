@@ -1,11 +1,13 @@
 goog.provide('Demo');
 goog.provide('Demo.FrameEvent');
 
+goog.require('pl.ex');
+goog.require('pl.FpsLogger');
+
 goog.require('box2d.AABB');
 goog.require('box2d.BodyDef');
 goog.require('box2d.BoxDef');
 goog.require('box2d.CircleDef');
-goog.require('pl.ex');
 goog.require('box2d.World');
 
 goog.require('demoDraw');
@@ -21,7 +23,6 @@ goog.require('goog.events.EventType');
 goog.require('goog.math.Vec2');
 goog.require('goog.Timer');
 
-goog.require('pixelLab.FpsLogger');
 
 /**
  @constructor
@@ -34,7 +35,7 @@ Demo = function(canvasContext) {
   this.m_demos = [demos.compound, demos.crank, demos.stack, demos.pendulum, demos.top];
   this.nextDemo();
 
-  this.m_fpsLogger = new pixelLab.FpsLogger();
+  this.m_fpsLogger = new pl.FpsLogger();
   this.m_limitFps = true;
   this._step();
 
