@@ -1,10 +1,10 @@
-base_path: js/closure-library/closure
+base_path: js/closure/closure
 inputs:
   - js/application.js
 js_paths:
-  - js/closure-library/closure
-  - js/box2d
+  - js/closure/closure
   - js/demo
+  - js/pl
   - js/pixelLab
 deps_path: js/deps.js
 compile_path: js/compiled.js
