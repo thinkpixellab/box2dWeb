@@ -1,28 +1,24 @@
 goog.provide('Demo');
 goog.provide('Demo.FrameEvent');
 
-goog.require('pl.ex');
-goog.require('pl.FpsLogger');
-
 goog.require('box2d.AABB');
 goog.require('box2d.BodyDef');
 goog.require('box2d.BoxDef');
 goog.require('box2d.CircleDef');
 goog.require('box2d.World');
-
 goog.require('demoDraw');
 goog.require('demos.compound');
 goog.require('demos.crank');
 goog.require('demos.pendulum');
 goog.require('demos.stack');
 goog.require('demos.top');
-
+goog.require('goog.Timer');
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.math.Vec2');
-goog.require('goog.Timer');
-
+goog.require('pl.FpsLogger');
+goog.require('pl.ex');
 
 /**
  @constructor
@@ -53,7 +49,7 @@ goog.inherits(Demo, goog.events.EventTarget);
 
 /**
  @param {number=} opt_delta
-*/
+ */
 Demo.prototype.nextDemo = function(opt_delta) {
   if (this.m_demos.length === 0) {
     throw 'No demos to load';
@@ -87,10 +83,9 @@ Demo.prototype.limitFps = function(opt_limitFps) {
  */
 Demo.prototype._step = function() {
   this.m_fpsLogger.AddInterval();
-  if(this.m_limitFps){
+  if (this.m_limitFps) {
     pl.ex.requestAnimationFrame(goog.bind(this._step, this));
-  }
-  else{
+  } else {
     goog.Timer.callOnce(this._step, 0, this);
   }
   this.m_world.Step(Demo._secondsPerFrame, 1);
