@@ -20,8 +20,8 @@ goog.addDependency("../../../pl/src/debugDiv.js", ['pl.DebugDiv'], ['goog.assert
 goog.addDependency("../../../pl/src/ex.js", ['pl.ex'], ['goog.array', 'goog.math.Size', 'goog.string', 'goog.style']);
 goog.addDependency("../../../pl/src/fpsLogger.js", ['pl.FpsLogger'], []);
 goog.addDependency("../../../pl/src/gfx.js", ['pl.gfx'], ['goog.graphics.AffineTransform', 'goog.math.Size']);
+goog.addDependency("../../../pl/src/images.js", ['pl.images'], ['goog.asserts', 'goog.net.EventType', 'goog.net.ImageLoader', 'goog.object']);
 goog.addDependency("../../../pl/src/keyBinding.js", ['pl.KeyBinding', 'pl.KeyBindingEvent'], ['goog.events.Event', 'goog.events.EventTarget', 'goog.ui.KeyboardShortcutHandler', 'goog.ui.KeyboardShortcutHandler.EventType']);
-goog.addDependency("../../../pl/src/preload.js", ['pl.Preload'], ['goog.object']);
 goog.addDependency("../../../pl/src/property.js", ['pl.Property'], ['goog.array', 'goog.math.Coordinate', 'goog.math.Size']);
 goog.addDependency("../../../pl/src/soundEffect.js", ['pl.SoundEffect'], []);
 goog.addDependency("../../../pl/src/stats.js", ['pl.Stats'], ['goog.dom']);
@@ -94,7 +94,7 @@ goog.addDependency("../../../pl/src/box2d/dynamics/joints/b2RevoluteJoint.js", [
 goog.addDependency("../../../pl/src/box2d/dynamics/joints/b2RevoluteJointDef.js", ['box2d.RevoluteJointDef'], ['box2d.Joint', 'box2d.JointDef', 'box2d.Vec2']);
 goog.addDependency("../../../pl/src/qr/qr8BitByte.js", ['qr.EightBitByte'], []);
 goog.addDependency("../../../pl/src/qr/qrBitBuffer.js", ['qr.BitBuffer'], []);
-goog.addDependency("../../../pl/src/qr/qrcode.js", ['qr.Code'], ['qr.BitBuffer', 'qr.EightBitByte', 'qr.Mode', 'qr.RSBlock', 'qr.Util']);
+goog.addDependency("../../../pl/src/qr/qrCode.js", ['qr.Code'], ['qr.BitBuffer', 'qr.EightBitByte', 'qr.Mode', 'qr.RSBlock', 'qr.Util']);
 goog.addDependency("../../../pl/src/qr/qrEnums.js", ['qr.ErrorCorrectLevel', 'qr.MaskPattern', 'qr.Mode'], []);
 goog.addDependency("../../../pl/src/qr/qrMath.js", ['qr.Math'], []);
 goog.addDependency("../../../pl/src/qr/qrPolynomial.js", ['qr.Polynomial'], []);
@@ -103,7 +103,7 @@ goog.addDependency("../../../pl/src/qr/qrUtil.js", ['qr.Util'], ['qr.Math', 'qr.
 goog.addDependency("../../../pl/src/retained/animation.js", ['pl.retained.Animation'], ['goog.asserts', 'pl.Behavior', 'pl.retained.EventType']);
 goog.addDependency("../../../pl/src/retained/carouselContainer.js", ['pl.retained.CarouselContainer'], ['goog.array', 'goog.graphics.AffineTransform', 'goog.math.Coordinate', 'goog.math.Size', 'pl.retained.Container', 'pl.retained.Element']);
 goog.addDependency("../../../pl/src/retained/container.js", ['pl.retained.Container'], ['goog.array', 'goog.asserts', 'pl.retained.Element', 'pl.retained.ElementParent']);
-goog.addDependency("../../../pl/src/retained/element.js", ['pl.retained.Element'], ['goog.asserts', 'goog.color.alpha', 'goog.events.EventTarget', 'goog.graphics.AffineTransform', 'goog.math.Coordinate', 'goog.math.Rect', 'goog.math.Size', 'pl.gfx', 'pl.retained.ElementParent', 'pl.retained.EventType']);
+goog.addDependency("../../../pl/src/retained/element.js", ['pl.retained.Element'], ['goog.array', 'goog.asserts', 'goog.color.alpha', 'goog.events.EventTarget', 'goog.graphics.AffineTransform', 'goog.math.Coordinate', 'goog.math.Rect', 'goog.math.Size', 'pl.gfx', 'pl.retained.ElementParent', 'pl.retained.EventType']);
 goog.addDependency("../../../pl/src/retained/elementParent.js", ['pl.retained.ElementParent'], ['goog.array', 'goog.asserts']);
 goog.addDependency("../../../pl/src/retained/eventType.js", ['pl.retained.EventType'], []);
 goog.addDependency("../../../pl/src/retained/helper.js", ['pl.retained.helper'], ['goog.array', 'goog.math.Coordinate', 'goog.math.Size', 'pl.ex', 'pl.gfx', 'pl.retained.Element', 'pl.retained.mouse']);
