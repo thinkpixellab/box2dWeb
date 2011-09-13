@@ -1,3 +1,4 @@
+# kbuild file - https://github.com/kevmoo/kbuild
 base_path: js/closure/closure
 inputs:
   - js/application.js
