@@ -1,9 +1,11 @@
+goog.provide('Demo.loader');
+
 goog.require('Demo');
 goog.require('Demo.FrameEvent');
 
 $(document).ready(function() {
   var canvas = $('canvas')[0];
-  canvas.onselectstart = function () {
+  canvas.onselectstart = function() {
     return false;
   };
 
