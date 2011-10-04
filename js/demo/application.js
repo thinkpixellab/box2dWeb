@@ -2,8 +2,12 @@ goog.provide('Demo.loader');
 
 goog.require('Demo');
 goog.require('Demo.FrameEvent');
+goog.require('pl.Stats');
 
 $(document).ready(function() {
+  if (COMPILED) {
+    pl.Stats.addGoogleAnalytics('UA-13190322-6');
+  }
   var canvas = $('canvas')[0];
   canvas.onselectstart = function() {
     return false;
