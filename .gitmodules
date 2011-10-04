@@ -1,6 +1,6 @@
 [submodule "js/closure"]
 	path = js/closure
-	url = git://github.com/jarib/google-closure-library.git
+	url = git://github.com/kevmoo/google-closure-library.git
 [submodule "js/pl"]
 	path = js/pl
-	url = git@github.com:thinkpixellab/pl.git
+	url = git://github.com/thinkpixellab/pl.git
